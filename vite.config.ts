@@ -27,10 +27,22 @@ export default defineConfig({
   server: {
     port: 3000,
     host: '0.0.0.0', // Allow external connections for Docker
+    allowedHosts: [
+      'localhost',
+      'chat.netcoptech.com',
+      '127.0.0.1',
+      'app' // Docker service name
+    ],
   },
   preview: {
     port: 4173,
     host: '0.0.0.0',
+    allowedHosts: [
+      'localhost',
+      'chat.netcoptech.com',
+      '127.0.0.1',
+      'app' // Docker service name
+    ],
   },
   // Environment variable configuration
   envPrefix: ['VITE_'],
