@@ -18,10 +18,21 @@ export const useAppStore = defineStore('app', () => {
   }))
 
   const businessId = computed(() => {
-    // Extract business ID from URL path
+    // Check for business parameter in URL query string first
+    const urlParams = new URLSearchParams(window.location.search)
+    const businessParam = urlParams.get('business')
+    
+    if (businessParam) {
+      return businessParam
+    }
+    
+    // Fallback to extracting business ID from URL path
     const path = window.location.pathname
     const match = path.match(/\/([^\/]+)$/)
-    return match ? match[1] : 'demo'
+    
+    // Use environment variable default or 'demo' as final fallback
+    const defaultBusiness = import.meta.env.VITE_DEFAULT_BUSINESS || 'demo'
+    return match ? match[1] : defaultBusiness
   })
 
   // Actions
@@ -42,23 +53,39 @@ export const useAppStore = defineStore('app', () => {
 
   async function loadBusinessConfig(id: string) {
     try {
-      // For now, load from static data
-      // In production, this would fetch from an API
-      const businessData = await import('@/data/businesses.json')
-      const business = businessData.default.find((b: any) => b.id === id)
+      let business = null
+      
+      // Try to load from external API first (if configured)
+      const apiUrl = import.meta.env.VITE_API_URL
+      if (apiUrl) {
+        try {
+          const response = await fetch(`${apiUrl}/businesses/${id}`)
+          if (response.ok) {
+            business = await response.json()
+          }
+        } catch (apiErr) {
+          console.warn('Failed to load from API, falling back to static data:', apiErr)
+        }
+      }
+      
+      // Fallback to static data if API not available or failed
+      if (!business) {
+        const businessData = await import('@/data/businesses.json')
+        business = businessData.default.find((b: any) => b.id === id)
+        
+        // Load demo business if specific business not found
+        if (!business) {
+          business = businessData.default.find((b: any) => b.id === 'demo')
+        }
+      }
       
       if (!business) {
-        // Load demo business if specific business not found
-        currentBusiness.value = businessData.default.find((b: any) => b.id === 'demo') || null
-      } else {
-        currentBusiness.value = business
-      }
-      
-      if (!currentBusiness.value) {
         throw new Error(`Business configuration not found for ID: ${id}`)
       }
+      
+      currentBusiness.value = business
     } catch (err) {
-      throw new Error('Failed to load business configuration')
+      throw new Error(`Failed to load business configuration: ${err instanceof Error ? err.message : 'Unknown error'}`)
     }
   }
 

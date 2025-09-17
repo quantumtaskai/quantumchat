@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: quantum-receptionist
+    restart: unless-stopped
+    
+    # Dokploy required network
+    networks:
+      - dokploy-network
+    
+    # Environment variables for production
+    environment:
+      - NODE_ENV=production
+      - VITE_API_URL=${VITE_API_URL:-}
+      - VITE_DEFAULT_BUSINESS=${VITE_DEFAULT_BUSINESS:-demo}
+    
+    # Dokploy Traefik labels for domain routing
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.quantum-receptionist.rule=Host(`${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.quantum-receptionist.entrypoints=web,websecure"
+      - "traefik.http.routers.quantum-receptionist.tls=true"
+      - "traefik.http.routers.quantum-receptionist.tls.certresolver=letsencrypt"
+      - "traefik.http.services.quantum-receptionist.loadbalancer.server.port=80"
+      - "traefik.http.middlewares.quantum-receptionist-headers.headers.customRequestHeaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.quantum-receptionist.middlewares=quantum-receptionist-headers"
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# External network created by Dokploy
+networks:
+  dokploy-network:
+    external: true

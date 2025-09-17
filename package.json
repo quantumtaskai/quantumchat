@@ -5,8 +5,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
+    "build:docker": "vite build",
+    "build:prod": "NODE_ENV=production npm run build",
     "preview": "vite preview",
-    "type-check": "vue-tsc --noEmit"
+    "type-check": "vue-tsc --noEmit",
+    "docker:build": "docker build -t quantum-receptionist .",
+    "docker:run": "docker run -p 8080:80 quantum-receptionist",
+    "docker:compose": "docker-compose up -d",
+    "docker:compose:build": "docker-compose up -d --build",
+    "docker:logs": "docker-compose logs -f app"
   },
   "dependencies": {
     "vue": "^3.4.0",
