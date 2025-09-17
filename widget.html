@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Chat Widget</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .widget-container {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999999;
+            max-width: 400px;
+            width: 90vw;
+        }
+        
+        .widget-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            outline: none;
+        }
+        
+        .widget-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
+        }
+        
+        .widget-button.open {
+            background: #ef4444;
+        }
+        
+        .widget-chat {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 380px;
+            max-width: 90vw;
+            height: 600px;
+            max-height: 80vh;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .widget-chat.open {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .widget-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .widget-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        
+        .widget-input {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            border-radius: 0 0 16px 16px;
+        }
+        
+        .message-bubble {
+            max-width: 80%;
+            margin: 10px 0;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .message-user {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 6px;
+        }
+        
+        .message-ai {
+            background: white;
+            color: #1f2937;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 6px;
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .text-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            resize: none;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .text-input:focus {
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-mic {
+            background: #ef4444;
+            color: white;
+            width: 48px;
+            height: 48px;
+        }
+        
+        .btn-mic:hover {
+            background: #dc2626;
+        }
+        
+        .btn-mic.recording {
+            animation: pulse 1.5s infinite;
+            background: #dc2626;
+        }
+        
+        .btn-send {
+            background: #667eea;
+            color: white;
+            width: 48px;
+            height: 48px;
+        }
+        
+        .btn-send:hover {
+            background: #5a67d8;
+        }
+        
+        .status-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 8px;
+            text-align: center;
+        }
+        
+        .settings-panel {
+            padding: 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .settings-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        
+        .settings-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @media (max-width: 480px) {
+            .widget-container {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                width: auto;
+            }
+            
+            .widget-chat {
+                width: 100%;
+                height: 70vh;
+                bottom: 80px;
+                right: 0;
+                left: 0;
+            }
+            
+            .widget-button {
+                margin-left: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="quantumChatWidget" class="widget-container">
+        <!-- Toggle Button -->
+        <button id="widgetButton" class="widget-button" title="Open AI Chat">
+            <svg id="widgetIcon" width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.09 0 2.14-.18 3.12-.5l5.88 1.92-1.92-5.88c.32-.98.5-2.03.5-3.12 0-5.52-4.48-10-10-10z"/>
+            </svg>
+        </button>
+        
+        <!-- Chat Interface -->
+        <div id="widgetChat" class="widget-chat">
+            <!-- Header -->
+            <div class="widget-header">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600;">AI Assistant</h3>
+                <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Powered by Quantum AI</p>
+            </div>
+            
+            <!-- Settings Panel -->
+            <div id="settingsPanel" class="settings-panel" style="display: none;">
+                <label style="font-size: 12px; font-weight: 500; color: #374151;">
+                    OpenAI API Key:
+                    <input 
+                        type="password" 
+                        id="apiKeyInput" 
+                        placeholder="Enter your API key"
+                        class="settings-input"
+                    >
+                </label>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <button id="saveSettings" class="settings-button">Save</button>
+                    <button id="toggleSettings" class="settings-button" style="background: #6b7280;">Hide</button>
+                </div>
+            </div>
+            
+            <!-- Messages Area -->
+            <div id="messagesContainer" class="widget-messages">
+                <div class="message-bubble message-ai">
+                    <div style="font-weight: 600; font-size: 12px; margin-bottom: 4px; opacity: 0.7;">AI Assistant</div>
+                    Hello! I'm your AI voice assistant. You can speak to me using the microphone button or type your message. How can I help you today?
+                </div>
+            </div>
+            
+            <!-- Input Area -->
+            <div class="widget-input">
+                <div class="input-container">
+                    <button id="micButton" class="btn btn-mic" title="Click to start/stop voice recording">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+                            <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
+                            <path d="M12 19v3"/>
+                            <path d="M8 23h8"/>
+                        </svg>
+                    </button>
+                    
+                    <textarea 
+                        id="textInput" 
+                        rows="1" 
+                        placeholder="Type your message..."
+                        class="text-input"
+                    ></textarea>
+                    
+                    <button id="sendButton" class="btn btn-send" title="Send message">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="statusDisplay" class="status-text">Ready to chat...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Widget functionality
+        class QuantumChatWidget {
+            constructor() {
+                this.isOpen = false;
+                this.isRecording = false;
+                this.recognition = null;
+                this.synthesis = window.speechSynthesis;
+                this.apiKey = localStorage.getItem('quantum_chat_api_key') || '';
+                
+                this.initElements();
+                this.setupEventListeners();
+                this.setupSpeechRecognition();
+                this.loadSettings();
+            }
+            
+            initElements() {
+                this.widgetButton = document.getElementById('widgetButton');
+                this.widgetChat = document.getElementById('widgetChat');
+                this.widgetIcon = document.getElementById('widgetIcon');
+                this.micButton = document.getElementById('micButton');
+                this.textInput = document.getElementById('textInput');
+                this.sendButton = document.getElementById('sendButton');
+                this.messagesContainer = document.getElementById('messagesContainer');
+                this.statusDisplay = document.getElementById('statusDisplay');
+                this.apiKeyInput = document.getElementById('apiKeyInput');
+                this.saveSettingsBtn = document.getElementById('saveSettings');
+                this.toggleSettingsBtn = document.getElementById('toggleSettings');
+                this.settingsPanel = document.getElementById('settingsPanel');
+            }
+            
+            setupEventListeners() {
+                this.widgetButton.addEventListener('click', () => this.toggleWidget());
+                this.micButton.addEventListener('click', () => this.toggleRecording());
+                this.sendButton.addEventListener('click', () => this.sendMessage());
+                this.textInput.addEventListener('keypress', (e) => this.handleKeyPress(e));
+                this.textInput.addEventListener('input', () => this.autoResize());
+                this.saveSettingsBtn.addEventListener('click', () => this.saveSettings());
+                this.toggleSettingsBtn.addEventListener('click', () => this.toggleSettings());
+                
+                // Close widget when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!document.getElementById('quantumChatWidget').contains(e.target)) {
+                        if (this.isOpen) {
+                            // Don't close immediately, let user interact
+                        }
+                    }
+                });
+            }
+            
+            toggleWidget() {
+                this.isOpen = !this.isOpen;
+                this.widgetChat.classList.toggle('open', this.isOpen);
+                this.widgetButton.classList.toggle('open', this.isOpen);
+                
+                if (this.isOpen) {
+                    this.widgetIcon.innerHTML = `
+                        <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    `;
+                    this.textInput.focus();
+                } else {
+                    this.widgetIcon.innerHTML = `
+                        <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.09 0 2.14-.18 3.12-.5l5.88 1.92-1.92-5.88c.32-.98.5-2.03.5-3.12 0-5.52-4.48-10-10-10z"/>
+                        </svg>
+                    `;
+                }
+            }
+            
+            setupSpeechRecognition() {
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                    this.updateStatus('Speech recognition not supported');
+                    this.micButton.disabled = true;
+                    return;
+                }
+
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                this.recognition = new SpeechRecognition();
+                
+                this.recognition.continuous = false;
+                this.recognition.interimResults = true;
+                this.recognition.lang = 'en-US';
+
+                this.recognition.onstart = () => {
+                    this.isRecording = true;
+                    this.micButton.classList.add('recording');
+                    this.updateStatus('Listening... Speak now');
+                };
+
+                this.recognition.onresult = (event) => {
+                    let transcript = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        transcript += event.results[i][0].transcript;
+                    }
+                    this.textInput.value = transcript;
+                    this.autoResize();
+                };
+
+                this.recognition.onend = () => {
+                    this.isRecording = false;
+                    this.micButton.classList.remove('recording');
+                    this.updateStatus('Ready to chat...');
+                    
+                    if (this.textInput.value.trim()) {
+                        this.sendMessage();
+                    }
+                };
+
+                this.recognition.onerror = (event) => {
+                    this.isRecording = false;
+                    this.micButton.classList.remove('recording');
+                    this.updateStatus('Speech error: ' + event.error);
+                };
+            }
+            
+            toggleRecording() {
+                if (!this.recognition) {
+                    this.updateStatus('Speech recognition not available');
+                    return;
+                }
+
+                if (this.isRecording) {
+                    this.recognition.stop();
+                } else {
+                    this.textInput.value = '';
+                    this.autoResize();
+                    this.recognition.start();
+                }
+            }
+            
+            handleKeyPress(event) {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    this.sendMessage();
+                }
+            }
+            
+            autoResize() {
+                this.textInput.style.height = 'auto';
+                this.textInput.style.height = Math.min(this.textInput.scrollHeight, 120) + 'px';
+            }
+            
+            async sendMessage() {
+                const message = this.textInput.value.trim();
+                if (!message) return;
+
+                if (!this.apiKey) {
+                    this.updateStatus('Please enter your OpenAI API key in settings');
+                    this.toggleSettings();
+                    return;
+                }
+
+                this.addMessage(message, 'user');
+                this.textInput.value = '';
+                this.autoResize();
+                this.updateStatus('Thinking...');
+
+                try {
+                    const response = await this.callOpenAI(message);
+                    this.addMessage(response, 'ai');
+                    this.speakText(response);
+                    this.updateStatus('Ready to chat...');
+                } catch (error) {
+                    console.error('Error:', error);
+                    this.addMessage('Sorry, I encountered an error. Please check your API key and try again.', 'ai');
+                    this.updateStatus('Error: ' + error.message);
+                }
+            }
+            
+            async callOpenAI(message) {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'You are a helpful AI assistant. Keep your responses conversational, friendly, and concise (1-3 sentences when possible).'
+                            },
+                            {
+                                role: 'user',
+                                content: message
+                            }
+                        ],
+                        max_tokens: 300,
+                        temperature: 0.7
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            }
+            
+            addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message-bubble message-${sender}`;
+                
+                if (sender === 'ai') {
+                    const senderLabel = document.createElement('div');
+                    senderLabel.style.cssText = 'font-weight: 600; font-size: 12px; margin-bottom: 4px; opacity: 0.7;';
+                    senderLabel.textContent = 'AI Assistant';
+                    messageDiv.appendChild(senderLabel);
+                }
+                
+                const messageText = document.createElement('div');
+                messageText.textContent = text;
+                messageDiv.appendChild(messageText);
+                
+                this.messagesContainer.appendChild(messageDiv);
+                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+            }
+            
+            speakText(text) {
+                if (!this.synthesis) return;
+
+                this.synthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                
+                utterance.onstart = () => this.updateStatus('Speaking...');
+                utterance.onend = () => this.updateStatus('Ready to chat...');
+                utterance.onerror = () => this.updateStatus('Ready to chat...');
+
+                this.synthesis.speak(utterance);
+            }
+            
+            updateStatus(message) {
+                this.statusDisplay.textContent = message;
+            }
+            
+            loadSettings() {
+                if (this.apiKey) {
+                    this.apiKeyInput.value = this.apiKey;
+                }
+            }
+            
+            saveSettings() {
+                this.apiKey = this.apiKeyInput.value.trim();
+                if (this.apiKey) {
+                    localStorage.setItem('quantum_chat_api_key', this.apiKey);
+                    this.updateStatus('Settings saved');
+                } else {
+                    localStorage.removeItem('quantum_chat_api_key');
+                    this.updateStatus('API key removed');
+                }
+            }
+            
+            toggleSettings() {
+                const isHidden = this.settingsPanel.style.display === 'none';
+                this.settingsPanel.style.display = isHidden ? 'block' : 'none';
+                this.toggleSettingsBtn.textContent = isHidden ? 'Hide' : 'Settings';
+            }
+        }
+
+        // Initialize widget when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new QuantumChatWidget();
+        });
+    </script>
+</body>
+</html>

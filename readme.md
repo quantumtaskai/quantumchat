@@ -1,63 +1,194 @@
-Build a web-based AI chat agent with voice input and output that users can interact with directly on a website.
+# 🤖 Quantum Chat - AI Voice Chat Widget
 
-Requirements:
+A modern, embeddable AI voice chat widget that can be integrated into any website with just one line of code. Features speech-to-text input, AI responses via OpenAI API, and text-to-speech output.
 
-The agent should accept microphone input → convert it to text using Speech-to-Text (STT).
+## ✨ Features
 
-The text query is sent to an AI model API (like OpenAI, Anthropic, or Gemini).
+- 🎤 **Voice Input** - Natural speech-to-text using Web Speech API
+- 🤖 **AI Responses** - Powered by OpenAI GPT for intelligent conversations
+- 🔊 **Voice Output** - Text-to-speech for AI responses
+- 📱 **Responsive Design** - Works perfectly on mobile and desktop
+- 🔧 **Easy Integration** - Single script tag embedding
+- 🎨 **Customizable** - Position, styling, and behavior options
+- 🔒 **Secure** - API keys stored securely in localStorage
 
-The AI model response should be:
+## 🚀 Quick Start
 
-Displayed as text in the chat window.
+### Option 1: Embeddable Widget (Recommended)
 
-Converted into speech using Text-to-Speech (TTS) and played back to the user.
+Add this single line to your website:
 
-Provide a simple chat UI with:
+```html
+<script src="https://quantumtaskai.github.io/quantumchat/embed.js"></script>
+```
 
-A chat bubble interface (user + agent messages).
+### Option 2: Standalone Application
 
-A microphone button to start/stop listening.
+Visit the hosted version: [https://quantumtaskai.github.io/quantumchat](https://quantumtaskai.github.io/quantumchat)
 
-A fallback text input box for typing.
+### Option 3: Widget Only
 
-Must be responsive and embeddable in any website.
+Use the widget interface: [https://quantumtaskai.github.io/quantumchat/widget.html](https://quantumtaskai.github.io/quantumchat/widget.html)
 
-Use HTML, Tailwind CSS, and JavaScript (vanilla or small library).
+## 📖 Integration Examples
 
-Tech Stack Suggestions:
+### Basic Integration
+```html
+<script src="https://quantumtaskai.github.io/quantumchat/embed.js"></script>
+```
 
-Speech-to-Text (STT): Web Speech API (for browsers) or external API (e.g., OpenAI Whisper, Google STT).
+### With Configuration
+```html
+<script>
+window.quantumChatConfig = {
+    position: 'bottom-left',    // bottom-right, bottom-left, top-right, top-left
+    autoOpen: false,           // Auto-open widget on page load
+    apiKey: 'your-api-key'     // Pre-configure API key
+};
+</script>
+<script src="https://quantumtaskai.github.io/quantumchat/embed.js"></script>
+```
 
-Text-to-Speech (TTS): Web Speech API’s speechSynthesis or external service like ElevenLabs.
+### Programmatic Control
+```javascript
+// Open the chat widget
+QuantumChat.open();
 
-AI Model API: OpenAI GPT-4, GPT-4o-mini, or any LLM of choice.
+// Send a message programmatically
+QuantumChat.sendMessage('Hello from my website!');
 
-Deliverables:
+// Set API key
+QuantumChat.setApiKey('your-openai-api-key');
 
-index.html → Chat UI with mic + text input.
+// Close the widget
+QuantumChat.close();
+```
 
-style.css (or Tailwind inline classes).
+### Event Callbacks
+```html
+<script>
+window.quantumChatCallbacks = {
+    onOpen: function() {
+        console.log('Chat opened');
+    },
+    onClose: function() {
+        console.log('Chat closed');
+    },
+    onMessageSent: function(message) {
+        console.log('User sent:', message);
+    },
+    onMessageReceived: function(message) {
+        console.log('AI replied:', message);
+    }
+};
+</script>
+```
 
-script.js → Handles STT, API calls, and TTS playback.
+## 🛠️ Setup Instructions
 
-Configurable API key section.
+1. **Get OpenAI API Key**
+   - Sign up at [OpenAI](https://openai.com)
+   - Get your API key from the dashboard
 
-Extra Features (Optional):
+2. **Add Script Tag**
+   - Copy the embed script
+   - Paste it into your website's HTML
 
-Store conversation history.
+3. **Configure (Optional)**
+   - Set position, styling, and behavior options
 
-Add typing animation for AI responses.
+4. **Test & Deploy**
+   - Test the widget and deploy to your live website
 
-Auto-scroll chat window.
+## 📁 Project Structure
 
-Option to mute/unmute voice output.
+```
+quantumchat/
+├── index.html          # Full standalone application
+├── widget.html         # Embeddable widget interface
+├── embed.js            # Widget embedding script
+├── demo.html           # Integration examples and demo
+└── README.md           # Documentation
+```
 
-Example User Flow:
+## 🔧 Configuration Options
 
-User clicks mic → speaks: “What services do you offer?”
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `position` | string | `'bottom-right'` | Widget position: `'bottom-right'`, `'bottom-left'`, `'top-right'`, `'top-left'` |
+| `autoOpen` | boolean | `false` | Auto-open widget on page load |
+| `apiKey` | string | `null` | Pre-configure OpenAI API key |
+| `theme` | string | `'default'` | Widget theme (future feature) |
 
-STT transcribes → text query sent to AI API.
+## 🎯 API Reference
 
-AI responds → text shown + spoken aloud.
+### QuantumChat Object
 
-User can continue via mic or text input.
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `open()` | none | Open the chat widget |
+| `close()` | none | Close the chat widget |
+| `toggle()` | none | Toggle widget open/closed |
+| `sendMessage(message)` | string | Send a message programmatically |
+| `setApiKey(apiKey)` | string | Set the OpenAI API key |
+| `updateConfig(config)` | object | Update widget configuration |
+
+### Callbacks
+
+| Callback | Parameters | Description |
+|----------|------------|-------------|
+| `onOpen` | none | Called when widget opens |
+| `onClose` | none | Called when widget closes |
+| `onMessageSent` | message (string) | Called when user sends a message |
+| `onMessageReceived` | message (string) | Called when AI responds |
+
+## 🌐 Browser Support
+
+- Chrome/Edge (Recommended) - Full support
+- Firefox - Full support
+- Safari - Limited speech recognition support
+- Mobile browsers - Touch-optimized interface
+
+## 🔒 Security & Privacy
+
+- API keys are stored locally in the user's browser
+- No data is sent to external servers except OpenAI
+- All communication is over HTTPS
+- Widget runs in isolated iframe for security
+
+## 📱 Mobile Optimization
+
+- Responsive design adapts to screen size
+- Touch-friendly interface
+- Voice input works on supported mobile browsers
+- Optimized chat bubble for mobile viewing
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📄 License
+
+MIT License - feel free to use in personal and commercial projects.
+
+## 🆘 Support
+
+- [GitHub Issues](https://github.com/quantumtaskai/quantumchat/issues)
+- [Live Demo](https://quantumtaskai.github.io/quantumchat/demo.html)
+- [Documentation](https://quantumtaskai.github.io/quantumchat)
+
+## 🏗️ Tech Stack
+
+- **Frontend**: HTML5, CSS3, Vanilla JavaScript
+- **Styling**: Tailwind CSS
+- **AI**: OpenAI GPT API
+- **Speech**: Web Speech API (STT/TTS)
+- **Hosting**: GitHub Pages
+
+---
+
+Made with ❤️ by [Quantum Task AI](https://github.com/quantumtaskai)
