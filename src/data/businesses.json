@@ -1,0 +1,256 @@
+[
+  {
+    "id": "demo",
+    "name": "Quantum Tech Solutions",
+    "description": "Leading provider of AI and quantum computing solutions for enterprise clients",
+    "industry": "Technology",
+    "branding": {
+      "primaryColor": "#3b82f6",
+      "secondaryColor": "#1e40af",
+      "logo": "/logos/quantum-tech.svg",
+      "font": "Inter"
+    },
+    "content": [
+      {
+        "id": "company-brochure",
+        "type": "website",
+        "title": "Company Overview",
+        "description": "Complete overview of our services and capabilities",
+        "url": "https://openai.com/about",
+        "tags": ["overview", "company", "services"],
+        "category": "company"
+      },
+      {
+        "id": "pricing-guide",
+        "type": "website",
+        "title": "Pricing Guide",
+        "description": "Detailed pricing for all our services",
+        "url": "https://openai.com/pricing",
+        "tags": ["pricing", "costs", "plans"],
+        "category": "pricing"
+      },
+      {
+        "id": "product-demo",
+        "type": "video",
+        "title": "AI Technology Demo",
+        "description": "Latest AI technology demonstration",
+        "url": "https://www.youtube.com/embed/aircAruvnKk",
+        "tags": ["demo", "product", "ai"],
+        "category": "product"
+      },
+      {
+        "id": "ai-overview",
+        "type": "video",
+        "title": "What is Artificial Intelligence?",
+        "description": "Educational video about AI basics",
+        "url": "https://www.youtube.com/embed/ad79nYk2keg",
+        "tags": ["education", "ai", "overview"],
+        "category": "education"
+      },
+      {
+        "id": "contact-form",
+        "type": "form",
+        "title": "Get in Touch",
+        "description": "Contact us for a consultation",
+        "data": {
+          "fields": [
+            {"name": "name", "type": "text", "label": "Full Name", "required": true},
+            {"name": "email", "type": "email", "label": "Email Address", "required": true},
+            {"name": "company", "type": "text", "label": "Company Name"},
+            {"name": "phone", "type": "tel", "label": "Phone Number"},
+            {"name": "interest", "type": "select", "label": "Service Interest", "options": ["AI Solutions", "Quantum Computing", "Consulting", "Support"]},
+            {"name": "message", "type": "textarea", "label": "Message"}
+          ]
+        },
+        "tags": ["contact", "form", "consultation"],
+        "category": "contact"
+      },
+      {
+        "id": "case-studies",
+        "type": "website",
+        "title": "Success Stories",
+        "description": "Real-world case studies from our clients",
+        "url": "https://openai.com/customer-stories",
+        "tags": ["cases", "success", "clients"],
+        "category": "proof"
+      },
+      {
+        "id": "team-photos",
+        "type": "website",
+        "title": "Meet Our Team",
+        "description": "Learn about our expert team members",
+        "url": "https://openai.com/about",
+        "tags": ["team", "people", "about"],
+        "category": "company"
+      },
+      {
+        "id": "tech-explainer",
+        "type": "video",
+        "title": "How AI Works",
+        "description": "Technical explanation of AI technology",
+        "url": "https://www.youtube.com/embed/O5nskjZ_GoI",
+        "tags": ["technical", "explanation", "ai"],
+        "category": "education"
+      }
+    ],
+    "knowledgeBase": [
+      {
+        "id": "kb-1",
+        "question": "What services do you offer?",
+        "answer": "We provide AI solutions, quantum computing services, and technology consulting for enterprise clients.",
+        "tags": ["services", "offerings"],
+        "contentIds": ["company-brochure"],
+        "priority": 10
+      },
+      {
+        "id": "kb-2",
+        "question": "How much do your services cost?",
+        "answer": "Our pricing varies based on the scope and complexity of your project. Let me show you our pricing guide.",
+        "tags": ["pricing", "cost", "price"],
+        "contentIds": ["pricing-guide"],
+        "priority": 9
+      },
+      {
+        "id": "kb-3",
+        "question": "Can I see a demo?",
+        "answer": "Absolutely! I have a great product demonstration video that shows our AI platform in action.",
+        "tags": ["demo", "demonstration", "product"],
+        "contentIds": ["product-demo"],
+        "priority": 8
+      },
+      {
+        "id": "kb-4",
+        "question": "How can I contact you?",
+        "answer": "I can help you get in touch with our team right now. Let me pull up our contact form.",
+        "tags": ["contact", "reach", "touch"],
+        "contentIds": ["contact-form"],
+        "priority": 7
+      },
+      {
+        "id": "kb-5",
+        "question": "Do you have case studies?",
+        "answer": "Yes! We have several success stories from our clients. Let me show you our case studies.",
+        "tags": ["case", "studies", "examples", "success"],
+        "contentIds": ["case-studies"],
+        "priority": 6
+      }
+    ],
+    "settings": {
+      "welcomeMessage": "Hello! I'm your AI assistant at Quantum Tech Solutions. I can help you learn about our services, pricing, and connect you with our team. How can I assist you today?",
+      "aiPersonality": "professional and helpful",
+      "enableVoice": true,
+      "enableLeadCapture": true,
+      "operatingHours": {
+        "enabled": true,
+        "timezone": "America/New_York",
+        "hours": {
+          "monday": {"open": "09:00", "close": "17:00"},
+          "tuesday": {"open": "09:00", "close": "17:00"},
+          "wednesday": {"open": "09:00", "close": "17:00"},
+          "thursday": {"open": "09:00", "close": "17:00"},
+          "friday": {"open": "09:00", "close": "17:00"},
+          "saturday": {"open": "10:00", "close": "14:00"},
+          "sunday": {"open": "closed", "close": "closed"}
+        }
+      }
+    }
+  },
+  {
+    "id": "healthplus",
+    "name": "HealthPlus Medical Center",
+    "description": "Comprehensive healthcare services with a focus on preventive care and patient wellness",
+    "industry": "Healthcare",
+    "branding": {
+      "primaryColor": "#059669",
+      "secondaryColor": "#047857",
+      "logo": "/logos/healthplus.svg",
+      "font": "Inter"
+    },
+    "content": [
+      {
+        "id": "services-overview",
+        "type": "website",
+        "title": "Medical Services",
+        "description": "Complete list of our medical services and specialties",
+        "url": "https://www.mayoclinic.org/patient-visitor-guide/billing-insurance",
+        "tags": ["services", "medical", "healthcare"],
+        "category": "services"
+      },
+      {
+        "id": "insurance-info",
+        "type": "website",
+        "title": "Insurance & Billing",
+        "description": "Insurance accepted and billing information",
+        "url": "https://www.healthcare.gov/",
+        "tags": ["insurance", "billing", "payment"],
+        "category": "billing"
+      },
+      {
+        "id": "health-education",
+        "type": "video",
+        "title": "Understanding Your Health",
+        "description": "Educational video about maintaining good health",
+        "url": "https://www.youtube.com/embed/aUaInS6HIGo",
+        "tags": ["education", "health", "wellness"],
+        "category": "education"
+      },
+      {
+        "id": "appointment-booking",
+        "type": "booking",
+        "title": "Schedule Appointment",
+        "description": "Book an appointment with one of our specialists",
+        "data": {
+          "calendar": "healthplus-appointments",
+          "services": ["General Practice", "Cardiology", "Dermatology", "Pediatrics"]
+        },
+        "tags": ["appointment", "booking", "schedule"],
+        "category": "appointment"
+      }
+    ],
+    "knowledgeBase": [
+      {
+        "id": "hkb-1",
+        "question": "What services do you provide?",
+        "answer": "We offer comprehensive medical services including general practice, specialist consultations, and preventive care.",
+        "tags": ["services", "medical"],
+        "contentIds": ["services-overview"],
+        "priority": 10
+      },
+      {
+        "id": "hkb-2",
+        "question": "Do you accept my insurance?",
+        "answer": "We accept most major insurance plans. Let me show you our complete insurance and billing information.",
+        "tags": ["insurance", "billing"],
+        "contentIds": ["insurance-info"],
+        "priority": 9
+      },
+      {
+        "id": "hkb-3",
+        "question": "How can I schedule an appointment?",
+        "answer": "I can help you schedule an appointment right now! Let me pull up our booking system.",
+        "tags": ["appointment", "schedule", "booking"],
+        "contentIds": ["appointment-booking"],
+        "priority": 8
+      }
+    ],
+    "settings": {
+      "welcomeMessage": "Welcome to HealthPlus Medical Center! I'm here to help you with information about our services, insurance, and scheduling appointments. How may I assist you today?",
+      "aiPersonality": "caring and professional",
+      "enableVoice": true,
+      "enableLeadCapture": true,
+      "operatingHours": {
+        "enabled": true,
+        "timezone": "America/New_York",
+        "hours": {
+          "monday": {"open": "08:00", "close": "18:00"},
+          "tuesday": {"open": "08:00", "close": "18:00"},
+          "wednesday": {"open": "08:00", "close": "18:00"},
+          "thursday": {"open": "08:00", "close": "18:00"},
+          "friday": {"open": "08:00", "close": "18:00"},
+          "saturday": {"open": "09:00", "close": "15:00"},
+          "sunday": {"open": "closed", "close": "closed"}
+        }
+      }
+    }
+  }
+]
