@@ -17,6 +17,7 @@ services:
       - NODE_ENV=production
       - VITE_API_URL=${VITE_API_URL:-}
       - VITE_DEFAULT_BUSINESS=${VITE_DEFAULT_BUSINESS:-demo}
+      - DOMAIN=${DOMAIN:-chat.netcoptech.com}
     
     # Dokploy Traefik labels for domain routing
     labels:
