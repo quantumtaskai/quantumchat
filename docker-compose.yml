@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: quantum-receptionist
+      target: production
     restart: unless-stopped
     
     # Dokploy required network
@@ -22,16 +22,13 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.quantum-receptionist.rule=Host(`${DOMAIN:-localhost}`)"
-      - "traefik.http.routers.quantum-receptionist.entrypoints=web,websecure"
-      - "traefik.http.routers.quantum-receptionist.tls=true"
-      - "traefik.http.routers.quantum-receptionist.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.quantum-receptionist.entrypoints=websecure"
+      - "traefik.http.routers.quantum-receptionist.tls.certResolver=letsencrypt"
       - "traefik.http.services.quantum-receptionist.loadbalancer.server.port=80"
-      - "traefik.http.middlewares.quantum-receptionist-headers.headers.customRequestHeaders.X-Forwarded-Proto=https"
-      - "traefik.http.routers.quantum-receptionist.middlewares=quantum-receptionist-headers"
     
     # Health check
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
       interval: 30s
       timeout: 10s
       retries: 3
