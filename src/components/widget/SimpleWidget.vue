@@ -116,12 +116,13 @@ import ContentPanel from '@/components/content/ContentPanel.vue'
 
 interface Props {
   business: BusinessConfig
+  autoExpand?: boolean
 }
 
 const props = defineProps<Props>()
 
-// Simple state
-const isExpanded = ref(false)
+// Simple state - start expanded if autoExpand is true
+const isExpanded = ref(props.autoExpand || false)
 const isMobile = ref(false)
 const showChat = ref(true)
 
@@ -179,10 +180,10 @@ onMounted(() => {
 
 <style scoped>
 .simple-widget {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 999999;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', sans-serif;
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
@@ -192,6 +193,8 @@ onMounted(() => {
 /* Minimized Card - Modern 2025 Design */
 .minimized-card {
   position: relative;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(135deg, #3b82f6 0%, #1e40af 35%, #7c3aed 100%);
   border-radius: 20px;
   padding: 28px 24px;
@@ -377,7 +380,7 @@ onMounted(() => {
 
 /* Popup Overlay */
 .popup-overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -586,13 +589,10 @@ onMounted(() => {
 
 /* Mobile Responsive - Enhanced */
 @media (max-width: 768px) {
-  .simple-widget {
+  .minimized-card {
     bottom: 20px;
     right: 20px;
     left: 20px;
-  }
-
-  .minimized-card {
     width: 260px;
     max-width: 260px;
     margin-left: auto;

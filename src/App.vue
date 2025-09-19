@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="font-sans antialiased">
+  <div id="app" class="font-sans antialiased bg-transparent">
     <!-- Widget Mode -->
     <WidgetApp v-if="isWidgetMode" />
 

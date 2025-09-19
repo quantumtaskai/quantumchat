@@ -1,7 +1,7 @@
 <template>
-  <div id="widget-app" class="h-screen w-full">
+  <div id="widget-app" class="h-screen w-full bg-transparent">
     <!-- Loading State -->
-    <div v-if="isLoading" class="flex items-center justify-center h-full bg-gray-50">
+    <div v-if="isLoading" class="flex items-center justify-center h-full bg-transparent">
       <div class="text-center">
         <div class="loading-spinner mx-auto mb-4"></div>
         <p class="text-gray-600 text-sm">Loading AI Receptionist...</p>
@@ -9,7 +9,7 @@
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="flex items-center justify-center h-full bg-gray-50 p-4">
+    <div v-else-if="error" class="flex items-center justify-center h-full bg-transparent p-4">
       <div class="text-center max-w-sm">
         <div class="text-red-500 mb-3">
           <svg class="w-12 h-12 mx-auto" fill="currentColor" viewBox="0 0 24 24">
@@ -31,6 +31,7 @@
     <SimpleWidget
       v-else-if="business && isSimpleMode"
       :business="business"
+      :auto-expand="urlParams.auto || urlParams.expanded"
     />
 
     <!-- Complex Widget Container (original) -->
@@ -249,5 +250,19 @@ onMounted(() => {
 
 #widget-app {
   font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Ensure transparent background for widget mode */
+body, html {
+  background: transparent !important;
+}
+
+/* Remove any default styling that might create boxes */
+*, *::before, *::after {
+  background: inherit;
+}
+
+#app, #widget-app {
+  background: transparent !important;
 }
 </style>
