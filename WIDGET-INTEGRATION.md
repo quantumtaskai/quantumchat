@@ -2,247 +2,86 @@
 
 ## Overview
 
-The AI Receptionist Widget is a card-style, embeddable interface that provides intelligent customer support and business information display for any website. Unlike traditional chat bubbles, our widget offers a professional card design with dual-panel functionality.
+The AI Receptionist Widget is a modern card-style interface that provides intelligent customer support and business information display for any website. Our ultra-simple integration requires just one script tag - no configuration needed.
 
 ## Features
 
-- **Card-Style Design**: Professional rectangular widget with rounded corners and shadows
-- **Dual-Panel Layout**: Content panel (business info, forms, media) + Chat panel (AI conversation)
-- **Mobile Responsive**: Adapts beautifully to mobile devices with slide-up interface
-- **Customizable Branding**: Match your business colors and branding
-- **Multiple Positions**: Bottom-right, bottom-left, bottom-center, sidebar options
-- **Resizable Interface**: Users can adjust widget size for optimal experience
-- **Smooth Animations**: Professional transitions and interactions
+- **Modern Card Design**: Professional 180px tall card with 2025 design trends
+- **Popup Overlay Expansion**: Smart 80vw×75vh popup with dual-panel layout
+- **Content Synchronization**: Content panel updates based on chat conversation
+- **Modern Typography**: Enhanced Inter font stack with improved readability
+- **Mobile Responsive**: Adapts perfectly to mobile devices with Info/Chat toggle
+- **Clean AI Messages**: Streamlined message display without unnecessary labels
+- **Auto-Loading**: Appears automatically when page loads
 
-## Quick Start
+## Ultra-Simple Integration
 
-### 1. Basic Integration
+### Just One Script Tag
 
-Add these two script tags to your website:
+Add this single line to your website:
 
 ```html
-<!-- Load the widget -->
 <script src="https://yourhost.com/widget-loader.js"></script>
-
-<!-- Initialize with your configuration -->
-<script>
-  QuantumChat.init({
-    businessId: 'your-business-id',
-    position: 'bottom-right',
-    size: 'medium'
-  });
-</script>
 ```
 
-### 2. Custom Business Configuration
+**That's it!** The widget loads automatically with:
+- ✅ Auto-detection of host URL
+- ✅ Professional card design
+- ✅ Smart popup expansion
+- ✅ Full feature set enabled
+- ✅ Mobile responsive behavior
 
-```html
-<script>
-  QuantumChat.init({
-    businessId: 'your-business-id',
-    apiUrl: 'https://api.yourcompany.com',
-    position: 'bottom-right',
-    size: 'medium',
-    primaryColor: '#3b82f6',
-    secondaryColor: '#1e40af'
-  });
-</script>
-```
+## How It Works
 
-## Configuration Options
+### Auto-Loading Widget
+- **Card appears** in bottom-right corner when page loads
+- **180px height** with modern gradient design and lighting effects
+- **Pulse indicator** shows the widget is active and ready
 
-### Widget Appearance
+### Smart Expansion
+- **Click the card** to open full interface in popup overlay
+- **80vw × 75vh popup** provides optimal viewing space
+- **70% content / 30% chat** split for desktop
+- **Mobile toggle** between Info and Chat panels
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `position` | string | `'bottom-right'` | Widget position on page |
-| `size` | string | `'medium'` | Widget size preset |
-| `primaryColor` | string | `'#3b82f6'` | Main brand color |
-| `secondaryColor` | string | `'#1e40af'` | Secondary brand color |
+### Content Intelligence
+- **AI responses trigger content** automatically (services → company info, pricing → pricing guide)
+- **Seamless synchronization** between chat and content panels
+- **Modern typography** throughout for enhanced readability
 
-#### Position Options
-- `'bottom-right'` - Bottom right corner (recommended)
-- `'bottom-left'` - Bottom left corner
-- `'bottom-center'` - Bottom center
-- `'sidebar-right'` - Right side, vertically centered
-- `'sidebar-left'` - Left side, vertically centered
+## Analytics Integration
 
-#### Size Options
-- `'compact'` - 400x300px (ideal for simple sites)
-- `'medium'` - 600x400px (recommended for most sites)
-- `'large'` - 800x500px (best for content-rich experiences)
-
-### Widget Behavior
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `allowResize` | boolean | `true` | Allow users to resize widget |
-| `showPulse` | boolean | `true` | Show attention pulse animation |
-| `showOverlay` | boolean | `true` | Show backdrop overlay on mobile |
-| `autoExpand` | boolean | `false` | Auto-expand widget after delay |
-| `expandDelay` | number | `3000` | Delay before auto-expand (ms) |
-
-### Business Configuration
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `businessId` | string | Required | Your business identifier |
-| `apiUrl` | string | Optional | Custom API endpoint |
-
-### Integration Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `hostUrl` | string | Auto-detected | Widget host URL |
-| `containerId` | string | `null` | Specific container element ID |
-
-## Event Handlers
-
-Configure event handlers to track widget interactions and integrate with your analytics:
+Track widget interactions with your analytics:
 
 ```javascript
-QuantumChat.init({
-  businessId: 'your-business-id',
+// Listen for widget events
+window.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'quantum-chat') {
+    switch (event.data.action) {
+      case 'widget-ready':
+        console.log('🤖 AI Receptionist ready');
+        // Track widget load
+        gtag('event', 'widget_loaded');
+        break;
 
-  // Event handlers
-  onReady: function() {
-    console.log('Widget is ready');
-    // Track widget load in analytics
-  },
-
-  onExpanded: function(data) {
-    console.log('Widget expanded', data);
-    // Track user engagement
-    gtag('event', 'widget_expanded', {
-      business: data.business
-    });
-  },
-
-  onMinimized: function() {
-    console.log('Widget minimized');
-    // Track user behavior
-  },
-
-  onClosed: function() {
-    console.log('Widget closed');
-    // Track widget dismissal
-  },
-
-  onError: function(error) {
-    console.error('Widget error', error);
-    // Handle errors gracefully
+      case 'widget-expanded':
+        console.log('💬 Chat started');
+        // Track user engagement
+        gtag('event', 'widget_expanded');
+        break;
+    }
   }
 });
-```
-
-## Advanced Configuration
-
-### Complete Configuration Example
-
-```javascript
-QuantumChat.init({
-  // Required
-  businessId: 'your-business-id',
-
-  // Widget appearance
-  position: 'bottom-right',
-  size: 'medium',
-  primaryColor: '#3b82f6',
-  secondaryColor: '#1e40af',
-
-  // Widget behavior
-  allowResize: true,
-  showPulse: true,
-  showOverlay: true,
-  autoExpand: false,
-  expandDelay: 3000,
-
-  // Integration options
-  apiUrl: 'https://api.yourcompany.com',
-  hostUrl: 'https://widget.yourcompany.com',
-  containerId: 'chat-widget-container',
-
-  // Event handlers
-  onReady: function() {
-    console.log('Widget initialized');
-  },
-  onExpanded: function(data) {
-    console.log('Widget expanded', data);
-  },
-  onMinimized: function() {
-    console.log('Widget minimized');
-  },
-  onClosed: function() {
-    console.log('Widget closed');
-  },
-  onError: function(error) {
-    console.error('Widget error', error);
-  }
-});
-```
-
-### Dynamic Configuration Updates
-
-Update widget configuration after initialization:
-
-```javascript
-// Get widget instance
-const widget = QuantumChat.init({ businessId: 'demo' });
-
-// Update configuration
-widget.updateConfig({
-  position: 'bottom-left',
-  primaryColor: '#10b981'
-});
-
-// Control widget visibility
-widget.show();
-widget.hide();
-widget.toggle();
-
-// Get widget status
-const status = widget.getStatus();
-console.log(status);
-
-// Destroy widget
-widget.destroy();
 ```
 
 ## Mobile Experience
 
 The widget automatically adapts to mobile devices:
 
-- **Minimized State**: Compact card at bottom-right
-- **Expanded State**: Slide-up interface taking 80% of screen height
-- **Navigation**: Toggle between Chat and Content panels
-- **Gestures**: Tap outside to dismiss
-
-### Mobile-Specific Styling
-
-```css
-/* Override mobile styles if needed */
-@media (max-width: 768px) {
-  #quantum-chat-widget {
-    /* Custom mobile adjustments */
-  }
-}
-```
-
-## Custom Container Integration
-
-Embed the widget in a specific container instead of floating:
-
-```html
-<div id="chat-container" style="width: 600px; height: 400px;"></div>
-
-<script>
-  QuantumChat.init({
-    businessId: 'your-business-id',
-    containerId: 'chat-container',
-    position: 'static' // Disable floating
-  });
-</script>
-```
+- **Minimized State**: 160px height card optimized for mobile
+- **Expanded State**: Full-screen popup with Info/Chat toggle
+- **Navigation**: Simple toggle between panels
+- **Gestures**: Tap outside popup to minimize
 
 ## Security Considerations
 
@@ -346,81 +185,33 @@ For older browsers, include polyfills:
 
 ## Examples
 
-### E-commerce Integration
+### Any Website Integration
 
-```javascript
-QuantumChat.init({
-  businessId: 'ecommerce-store',
-  position: 'bottom-right',
-  size: 'medium',
-  primaryColor: '#059669', // Brand green
-  autoExpand: false,
+```html
+<!-- E-commerce store -->
+<script src="https://yourhost.com/widget-loader.js"></script>
 
-  onExpanded: function() {
-    // Track customer service engagement
-    gtag('event', 'customer_service_started');
-  }
-});
+<!-- SaaS platform -->
+<script src="https://yourhost.com/widget-loader.js"></script>
+
+<!-- Professional services -->
+<script src="https://yourhost.com/widget-loader.js"></script>
+
+<!-- Blog or content site -->
+<script src="https://yourhost.com/widget-loader.js"></script>
 ```
 
-### SaaS Platform Integration
+**Same simple integration works everywhere!**
 
-```javascript
-QuantumChat.init({
-  businessId: 'saas-platform',
-  position: 'sidebar-right',
-  size: 'large',
-  allowResize: true,
-  showPulse: false, // Less intrusive for logged-in users
+## Widget Properties
 
-  onReady: function() {
-    // Pass user context if available
-    if (window.currentUser) {
-      this.setUserContext(window.currentUser);
-    }
-  }
-});
-```
+After loading, the widget provides:
 
-### Professional Services
-
-```javascript
-QuantumChat.init({
-  businessId: 'consulting-firm',
-  position: 'bottom-center',
-  size: 'medium',
-  primaryColor: '#1e40af',
-  autoExpand: true,
-  expandDelay: 5000, // Give users time to read content
-
-  onClosed: function() {
-    // Offer alternative contact methods
-    showContactForm();
-  }
-});
-```
-
-## API Reference
-
-### QuantumChat Object
-
-#### Methods
-
-- `init(config)` - Initialize widget with configuration
-- `create()` - Create new widget instance
-
-#### Widget Instance Methods
-
-- `show()` - Show the widget
-- `hide()` - Hide the widget
-- `toggle()` - Toggle widget visibility
-- `updateConfig(config)` - Update configuration
-- `getStatus()` - Get current widget status
-- `destroy()` - Remove widget from page
-
-#### Properties
-
-- `version` - Widget version string
+- **Auto-initialization** - Starts immediately when script loads
+- **Responsive design** - Adapts to all screen sizes
+- **Modern styling** - Professional appearance with 2025 design trends
+- **Smart content** - AI-driven content synchronization
+- **Event messaging** - PostMessage communication for analytics tracking
 
 ## Support
 
@@ -433,10 +224,11 @@ For questions or issues:
 
 ## Changelog
 
-### v1.0.0
-- Initial release with card-style widget
-- Dual-panel layout support
-- Mobile responsive design
-- Multiple positioning options
-- Custom branding support
-- Event handler system
+### v3.0.0 (Ultra-Simple)
+- **Ultra-simple integration**: One script tag, zero configuration
+- **Modern card design**: 180px height with 2025 design trends
+- **Popup overlay expansion**: 80vw×75vh smart popup
+- **Content synchronization**: AI responses trigger relevant content
+- **Enhanced typography**: Modern Inter font stack
+- **Clean messaging**: Streamlined AI message display
+- **Auto-loading**: Widget appears automatically on page load

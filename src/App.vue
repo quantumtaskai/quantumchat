@@ -1,11 +1,14 @@
 <template>
   <div id="app" class="font-sans antialiased">
+    <!-- Widget Mode -->
+    <WidgetApp v-if="isWidgetMode" />
+
     <!-- Main Receptionist Interface -->
-    <ReceptionistApp 
-      v-if="!appStore.isLoading && appStore.currentBusiness"
+    <ReceptionistApp
+      v-else-if="!appStore.isLoading && appStore.currentBusiness"
       :business="appStore.currentBusiness"
     />
-    
+
     <!-- Loading State -->
     <div v-else-if="appStore.isLoading" class="flex items-center justify-center min-h-screen bg-gray-50">
       <div class="text-center">
@@ -13,7 +16,7 @@
         <p class="text-gray-600">Loading AI Receptionist...</p>
       </div>
     </div>
-    
+
     <!-- Error State -->
     <div v-else-if="appStore.error" class="flex items-center justify-center min-h-screen bg-gray-50">
       <div class="text-center max-w-md">
@@ -24,15 +27,15 @@
         </div>
         <h2 class="text-xl font-semibold text-gray-800 mb-2">Something went wrong</h2>
         <p class="text-gray-600 mb-4">{{ appStore.error }}</p>
-        <button 
-          @click="appStore.initialize()" 
+        <button
+          @click="appStore.initialize()"
           class="btn-primary"
         >
           Try Again
         </button>
       </div>
     </div>
-    
+
     <!-- No Business Configuration -->
     <div v-else class="flex items-center justify-center min-h-screen bg-gray-50">
       <div class="text-center max-w-md">
@@ -49,15 +52,23 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useAppStore } from '@/stores/app'
 import ReceptionistApp from '@/components/layout/ReceptionistApp.vue'
+import WidgetApp from '@/components/widget/WidgetApp.vue'
 
 const appStore = useAppStore()
 
+// Check if we're in widget mode based on URL path
+const isWidgetMode = computed(() => {
+  return window.location.pathname === '/widget' || window.location.pathname.startsWith('/widget/')
+})
+
 onMounted(() => {
-  // Initialize the application
-  appStore.initialize()
+  // Only initialize app store for main app, not widget mode
+  if (!isWidgetMode.value) {
+    appStore.initialize()
+  }
 })
 </script>
 
