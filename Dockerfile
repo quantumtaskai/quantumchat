@@ -13,8 +13,8 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build the application (skip type checking for Docker builds)
-RUN npm run build:docker
+# Build the application for production
+RUN npm run build:prod
 
 # Production stage with Nginx
 FROM nginx:alpine AS production

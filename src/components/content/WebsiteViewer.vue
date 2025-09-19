@@ -74,7 +74,7 @@ function openWebsite() {
           contentId: props.content.id,
           url: props.content.url,
           title: props.content.title,
-          business: props.business.id
+          business: props.business.name
         }
       }
     }))

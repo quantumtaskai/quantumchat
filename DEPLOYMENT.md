@@ -1,229 +1,144 @@
-# Dokploy VPS Deployment Guide
+# AI Business Receptionist - Deployment Guide
 
-## Overview
+This guide explains how to deploy the AI Business Receptionist application for individual businesses using the simplified single-business architecture.
 
-This guide explains how to deploy the AI Business Receptionist on a VPS using Dokploy, a self-hosted PaaS alternative to Vercel/Netlify/Heroku.
+## 🎯 Deployment Strategy
 
-## Prerequisites
+Each business gets their own dedicated deployment with:
+- Custom business configuration
+- Isolated data and settings
+- Personalized branding
+- Independent scaling
 
-### VPS Requirements
-- **Minimum**: 2GB RAM, 30GB disk space, 1 vCPU
-- **Recommended**: 4GB RAM, 50GB disk space, 2 vCPU
-- **OS**: Ubuntu 20.04+ or similar Linux distribution
-- **Docker**: Will be installed automatically by Dokploy
+## 🔧 Pre-Deployment Setup
 
-### Dokploy Installation
+### 1. Clone the Repository
 
-1. **Install Dokploy on your VPS**:
-   ```bash
-   curl -sSL https://dokploy.com/install.sh | sh
-   ```
-
-2. **Access Dokploy Dashboard**:
-   - Open `http://your-server-ip:3000` in your browser
-   - Complete the initial setup wizard
-
-## Deployment Steps
-
-### 1. Repository Setup
-
-Ensure your repository is accessible (GitHub, GitLab, Bitbucket):
-- Repository URL: `https://github.com/your-username/your-repo.git`
-- Branch: `main` (or your preferred branch)
-
-### 2. Create New Application in Dokploy
-
-1. **Create New Service**:
-   - Go to Dokploy Dashboard
-   - Click "Create Application"
-   - Choose "Docker Compose"
-
-2. **Configure Repository**:
-   - **Repository URL**: Your Git repository URL
-   - **Branch**: `main`
-   - **Compose Path**: `./docker-compose.yml`
-
-### 3. Environment Variables
-
-Set the following environment variables in Dokploy:
-
-#### Required Variables
-```env
-NODE_ENV=production
-VITE_DEFAULT_BUSINESS=demo
-DOMAIN=your-domain.com
+```bash
+git clone <repository-url> business-receptionist-[BUSINESS-NAME]
+cd business-receptionist-[BUSINESS-NAME]
 ```
 
-#### Optional Variables
-```env
-VITE_API_URL=https://api.your-domain.com
-VITE_OPENAI_API_KEY=your-openai-api-key
-VITE_ANALYTICS_ID=your-analytics-id
-```
+### 2. Customize Business Configuration
 
-### 4. Domain Configuration
+Edit `src/data/business.json`:
 
-1. **Add Domain in Dokploy**:
-   - Go to your application settings
-   - Add your domain (e.g., `receptionist.your-domain.com`)
-   - Enable SSL/TLS certificate (Let's Encrypt)
-
-2. **DNS Configuration**:
-   ```
-   Type: A Record
-   Name: receptionist (or @ for root domain)
-   Value: your-server-ip
-   ```
-
-### 5. Deploy Application
-
-1. **Initial Deployment**:
-   - Click "Deploy" in Dokploy dashboard
-   - Monitor build logs for any errors
-   - Wait for deployment to complete
-
-2. **Verify Deployment**:
-   - Access your domain: `https://receptionist.your-domain.com`
-   - Test different business configurations:
-     - `https://receptionist.your-domain.com?business=demo`
-     - `https://receptionist.your-domain.com?business=healthplus`
-
-## Business Configuration
-
-### URL-Based Business Loading
-
-The application supports multiple ways to specify which business configuration to load:
-
-1. **Query Parameter** (Recommended for embedding):
-   ```
-   https://your-domain.com?business=dentist-office
-   ```
-
-2. **URL Path**:
-   ```
-   https://your-domain.com/dentist-office
-   ```
-
-3. **Environment Default**:
-   ```env
-   VITE_DEFAULT_BUSINESS=your-default-business
-   ```
-
-### Adding New Businesses
-
-#### Method 1: Static Configuration
-Add to `src/data/businesses.json`:
 ```json
 {
-  "id": "your-business-id",
-  "name": "Your Business Name",
-  "description": "Business description",
+  "id": "client-business-id",
+  "name": "Client Business Name",
+  "description": "Brief description for AI responses",
+  "industry": "Client's Industry",
+  "website": "https://clientwebsite.com",
   "branding": {
-    "primaryColor": "#your-color",
-    "secondaryColor": "#your-secondary-color"
+    "primaryColor": "#client-brand-color",
+    "secondaryColor": "#client-secondary-color",
+    "logo": "/assets/client-logo.svg",
+    "font": "Client-Font-Family"
   },
-  "content": [...],
-  "knowledgeBase": [...],
-  "settings": {...}
+  "settings": {
+    "welcomeMessage": "Hello! I'm [BUSINESS NAME]'s AI assistant. How can I help you today?",
+    "aiPersonality": "professional and friendly",
+    "enableVoice": true,
+    "enableLeadCapture": true
+  }
 }
 ```
 
-#### Method 2: External API (Future)
-Configure `VITE_API_URL` to load business configurations dynamically.
+### 3. Set Environment Variables
 
-## Website Embedding
+Create `.env.local`:
 
-### Iframe Embedding
-```html
-<iframe 
-  src="https://your-domain.com?business=your-business-id"
-  width="400"
-  height="600"
-  style="border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);"
-  allow="microphone">
-</iframe>
-```
-
-### Responsive Embedding
-```html
-<div style="position: relative; width: 100%; max-width: 400px; height: 600px;">
-  <iframe 
-    src="https://your-domain.com?business=your-business-id"
-    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
-    allow="microphone">
-  </iframe>
-</div>
-```
-
-## Monitoring and Maintenance
-
-### Application Logs
 ```bash
-# SSH into your VPS
-docker logs quantum-receptionist
-
-# Follow logs in real-time
-docker logs -f quantum-receptionist
+VITE_APP_TITLE=Client Business Name - AI Assistant
+VITE_APP_VERSION=1.0.0
 ```
 
-### Health Check
+### 4. Build and Test
+
 ```bash
-curl https://your-domain.com/health
+npm install
+npm run build
+npm run preview
 ```
 
-### Updates and Redeploys
-1. Push changes to your Git repository
-2. In Dokploy dashboard, click "Deploy" to rebuild and redeploy
-3. Or set up webhook for automatic deployments
+## 🚀 Deployment Options
 
-## Troubleshooting
+### Option 1: Docker Deployment (Recommended)
 
-### Common Issues
+```bash
+# Build and run with Docker
+npm run docker:build
+npm run docker:run
+```
 
-1. **Build Failures**:
-   - Check Node.js version in Dockerfile
-   - Verify all dependencies in package.json
-   - Review build logs in Dokploy
+### Option 2: Static Hosting
 
-2. **Network Issues**:
-   - Ensure ports 80/443 are open on your VPS
-   - Check domain DNS propagation
-   - Verify SSL certificate generation
+```bash
+# Build for production
+npm run build:prod
 
-3. **Business Not Loading**:
-   - Check business ID in URL parameters
-   - Verify business exists in businesses.json
-   - Check browser console for errors
+# Deploy dist/ folder to any static host
+# (Netlify, Vercel, GitHub Pages, etc.)
+```
 
-### Performance Optimization
+### Option 3: VPS with Nginx
 
-1. **CDN Integration**:
-   - Use Cloudflare or similar CDN
-   - Configure caching rules for static assets
+```bash
+# Build application
+npm run build:prod
 
-2. **Database Optimization** (Future):
-   - Add PostgreSQL for business configurations
-   - Implement Redis for caching
+# Copy to web server
+sudo cp -r dist/* /var/www/html/
 
-3. **Horizontal Scaling**:
-   - Use Dokploy's multi-server deployment
-   - Configure load balancing
+# Configure Nginx for SPA routing
+```
 
-## Security Considerations
+## 📋 Client Onboarding Checklist
 
-1. **SSL/TLS**: Always use HTTPS in production
-2. **Environment Variables**: Never commit sensitive data to repository
-3. **CORS**: Configure appropriate CORS headers for embedding
-4. **Rate Limiting**: Implement rate limiting for API calls (future)
+### Pre-Deployment
+- [ ] Clone repository with client name
+- [ ] Customize business.json
+- [ ] Add client branding
+- [ ] Test build locally
 
-## Support
+### Deployment
+- [ ] Deploy to production
+- [ ] Configure domain
+- [ ] Set up SSL
+- [ ] Test all features
 
-For deployment issues:
-1. Check Dokploy documentation: https://docs.dokploy.com
-2. Review application logs for specific errors
-3. Test locally with Docker Compose first
+### Post-Deployment
+- [ ] Client review
+- [ ] Configure monitoring
+- [ ] Set up backups
+- [ ] Document configuration
 
-For application-specific issues:
-1. Check the application logs
-2. Verify business configuration format
-3. Test with demo business first
+## 🔧 Quick Setup Commands
+
+```bash
+# 1. Clone and setup
+git clone <repo> client-receptionist
+cd client-receptionist
+npm install
+
+# 2. Customize configuration
+# Edit src/data/business.json with client details
+
+# 3. Build and deploy
+npm run build:prod
+npm run docker:build
+npm run docker:run
+
+# 4. Verify deployment
+curl http://localhost/health
+```
+
+## 🆘 Troubleshooting
+
+- **Build fails**: Clear node_modules and reinstall
+- **Docker issues**: Check container logs
+- **Content not loading**: Verify business.json format
+- **Styling issues**: Check branding colors are valid CSS
+
+For detailed deployment instructions and advanced configuration, contact the development team.

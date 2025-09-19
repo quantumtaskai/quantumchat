@@ -113,7 +113,7 @@ async function submitForm() {
         data: {
           formId: props.content.id,
           formData: formData.value,
-          business: props.business.id
+          business: props.business.name
         }
       }
     }))

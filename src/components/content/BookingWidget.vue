@@ -246,7 +246,7 @@ async function bookAppointment() {
       date: selectedDate.value,
       time: selectedTime.value,
       contact: contactInfo.value,
-      business: props.business.id
+      business: props.business.name
     }
 
     // Track booking event
