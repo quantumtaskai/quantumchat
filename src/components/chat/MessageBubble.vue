@@ -18,13 +18,6 @@
           class="px-4 py-3 rounded-2xl shadow-sm"
           :class="bubbleClasses"
         >
-          <!-- Sender Label (for assistant messages) -->
-          <div 
-            v-if="message.role === 'assistant' && showSenderLabel"
-            class="text-xs font-medium mb-1 opacity-70"
-          >
-            {{ business.name }} Assistant
-          </div>
 
           <!-- Message Text -->
           <div class="message-text" :class="textClasses">

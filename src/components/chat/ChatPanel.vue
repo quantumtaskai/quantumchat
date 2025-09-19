@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-panel flex flex-col h-full bg-gray-50">
+  <div class="chat-panel flex flex-col h-full bg-gray-50 modern-typography">
     <!-- Messages Area -->
     <div 
       ref="messagesContainer"
@@ -84,6 +84,7 @@
             v-model="inputMessage"
             @keydown="handleKeyDown"
             @input="handleInput"
+            @focus="emit('inputFocus')"
             placeholder="Type your message or use the microphone..."
             rows="1"
             class="w-full px-4 py-3 border border-gray-300 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -134,6 +135,12 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+// Emits for widget expansion
+const emit = defineEmits<{
+  chatStarted: []
+  inputFocus: []
+}>()
 
 const chatStore = useChatStore()
 const { 
@@ -202,6 +209,11 @@ function handleKeyDown(event: KeyboardEvent) {
 function handleInput() {
   autoResizeTextarea()
   hideQuickActionsAfterTyping()
+
+  // Emit input focus for widget expansion
+  if (inputMessage.value.trim().length > 0) {
+    emit('inputFocus')
+  }
 }
 
 function autoResizeTextarea() {
@@ -225,6 +237,9 @@ async function sendMessage() {
   const message = inputMessage.value.trim()
   inputMessage.value = ''
   autoResizeTextarea()
+
+  // Emit chat started for widget expansion
+  emit('chatStarted')
   
   await chatStore.sendMessage(message)
   
@@ -304,6 +319,46 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* Modern Typography */
+.modern-typography {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+}
+
+.modern-typography * {
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  font-feature-settings: 'ss01';
+}
+
+.modern-typography button {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.modern-typography input,
+.modern-typography textarea {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.modern-typography .text-sm {
+  font-size: 12px;
+  font-weight: 450;
+}
+
+.modern-typography .text-xs {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
 /* Message animations */
 .message-enter-active {
   transition: all 0.3s ease;

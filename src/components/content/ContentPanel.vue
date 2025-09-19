@@ -1,5 +1,5 @@
 <template>
-  <div class="content-panel h-full flex flex-col bg-white">
+  <div class="content-panel h-full flex flex-col bg-white modern-typography">
     <!-- Header -->
     <div class="content-header px-4 py-3 border-b border-gray-200 bg-gray-50">
       <div class="flex items-center justify-between">
@@ -357,6 +357,54 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Modern Typography */
+.modern-typography {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+}
+
+.modern-typography * {
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  font-feature-settings: 'ss01';
+}
+
+.modern-typography h3 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.modern-typography .text-sm {
+  font-size: 12px;
+  font-weight: 450;
+  line-height: 1.35;
+}
+
+.modern-typography .text-xs {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.modern-typography button {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.modern-typography .font-medium {
+  font-weight: 500;
+}
+
+.modern-typography .font-semibold {
+  font-weight: 600;
+}
+
 .content-card:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);

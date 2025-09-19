@@ -135,6 +135,7 @@ export const useChatStore = defineStore('chat', () => {
               // Suggest content from knowledge base if available
               if (bestMatch.contentIds && bestMatch.contentIds.length > 0) {
                 suggestedContent = bestMatch.contentIds
+                console.log(`Suggesting content from knowledge base:`, suggestedContent)
               }
             }
           }
@@ -146,7 +147,7 @@ export const useChatStore = defineStore('chat', () => {
           if (lowerMessage.includes('service') || lowerMessage.includes('what do you do')) {
             response = business?.description || 'I\'d be happy to tell you about our services! Let me pull up our company information.'
             intent = 'services_inquiry'
-            suggestedContent = [] // Don't suggest content that might not exist
+            suggestedContent = ['company-brochure'] // Suggest company overview
             
             // Try to get scraped services content
             if (business) {
@@ -161,7 +162,7 @@ export const useChatStore = defineStore('chat', () => {
           } else if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('pricing')) {
             response = 'Let me check our current pricing for you.'
             intent = 'pricing_inquiry'
-            suggestedContent = [] // Don't suggest content that might not exist
+            suggestedContent = ['pricing-guide'] // Suggest pricing guide
             
             // Try to get scraped pricing content
             if (business) {
@@ -194,6 +195,7 @@ export const useChatStore = defineStore('chat', () => {
           } else if (lowerMessage.includes('contact') || lowerMessage.includes('reach') || lowerMessage.includes('phone') || lowerMessage.includes('email')) {
             response = 'I can help you get in touch with us.'
             intent = 'contact_inquiry'
+            suggestedContent = ['contact-form'] // Suggest contact form
             
             // Try to get scraped contact content
             if (business) {
@@ -221,6 +223,7 @@ export const useChatStore = defineStore('chat', () => {
           } else if (lowerMessage.includes('appointment') || lowerMessage.includes('book') || lowerMessage.includes('schedule')) {
             response = 'I can help you with scheduling an appointment.'
             intent = 'appointment_inquiry'
+            suggestedContent = ['contact-form'] // Suggest contact form for appointment booking
             
             // Try to get scraped appointment content
             if (business) {
@@ -231,6 +234,12 @@ export const useChatStore = defineStore('chat', () => {
               }
             }
             
+          } else if (lowerMessage.includes('demo') || lowerMessage.includes('show') || lowerMessage.includes('see')) {
+            response = 'I can show you a demonstration of our technology!'
+            intent = 'demo_inquiry'
+            suggestedContent = ['product-demo'] // Suggest product demo
+            confidence = 0.8
+
           } else {
             // Generic response with business context
             const businessName = business?.name || 'our company'

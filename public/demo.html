@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Receptionist Widget Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .demo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .demo-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+
+        .demo-card p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .demo-button {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .demo-button.secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .demo-button.secondary:hover {
+            background: #e5e7eb;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+
+        .code-block {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .status.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status.inactive {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .widget-controls {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .widget-controls h4 {
+            margin-bottom: 15px;
+            color: #374151;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        .control-group select,
+        .control-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Custom animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .demo-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .demo-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .demo-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>AI Receptionist Widget</h1>
+            <p>Experience the power of intelligent customer engagement with our embeddable AI receptionist. Try different configurations and see how it integrates seamlessly into any website.</p>
+        </div>
+
+        <!-- Demo Cards -->
+        <div class="demo-grid">
+            <!-- Quick Start -->
+            <div class="demo-card">
+                <h3>🚀 Quick Start</h3>
+                <p>Get started with the basic widget in seconds. Perfect for most websites.</p>
+                <div class="status active">Ready to use</div>
+                <button class="demo-button" onclick="initBasicWidget()">Launch Basic Widget</button>
+                <button class="demo-button secondary" onclick="destroyWidget()">Remove Widget</button>
+            </div>
+
+            <!-- Position Demo -->
+            <div class="demo-card">
+                <h3>📍 Positioning</h3>
+                <p>Try different widget positions to see what works best for your site.</p>
+                <div class="widget-controls">
+                    <div class="control-group">
+                        <label for="position-select">Position:</label>
+                        <select id="position-select">
+                            <option value="bottom-right">Bottom Right</option>
+                            <option value="bottom-left">Bottom Left</option>
+                            <option value="bottom-center">Bottom Center</option>
+                            <option value="sidebar-right">Sidebar Right</option>
+                            <option value="sidebar-left">Sidebar Left</option>
+                        </select>
+                    </div>
+                    <button class="demo-button" onclick="updatePosition()">Update Position</button>
+                </div>
+            </div>
+
+            <!-- Size Demo -->
+            <div class="demo-card">
+                <h3>📏 Size Options</h3>
+                <p>Choose the perfect size for your website layout and user experience.</p>
+                <div class="widget-controls">
+                    <div class="control-group">
+                        <label for="size-select">Size:</label>
+                        <select id="size-select">
+                            <option value="compact">Compact (400x300)</option>
+                            <option value="medium" selected>Medium (600x400)</option>
+                            <option value="large">Large (800x500)</option>
+                        </select>
+                    </div>
+                    <button class="demo-button" onclick="updateSize()">Update Size</button>
+                </div>
+            </div>
+
+            <!-- Custom Branding -->
+            <div class="demo-card">
+                <h3>🎨 Custom Branding</h3>
+                <p>Customize colors to match your brand perfectly.</p>
+                <div class="widget-controls">
+                    <div class="control-group">
+                        <label for="primary-color">Primary Color:</label>
+                        <input type="color" id="primary-color" value="#3b82f6">
+                    </div>
+                    <div class="control-group">
+                        <label for="secondary-color">Secondary Color:</label>
+                        <input type="color" id="secondary-color" value="#1e40af">
+                    </div>
+                    <button class="demo-button" onclick="updateColors()">Update Colors</button>
+                </div>
+            </div>
+
+            <!-- Behavior Demo -->
+            <div class="demo-card">
+                <h3>⚙️ Behavior Settings</h3>
+                <p>Configure widget behavior to match your user engagement strategy.</p>
+                <div class="widget-controls">
+                    <div class="control-group">
+                        <label>
+                            <input type="checkbox" id="auto-expand"> Auto-expand after 3 seconds
+                        </label>
+                    </div>
+                    <div class="control-group">
+                        <label>
+                            <input type="checkbox" id="show-pulse" checked> Show attention pulse
+                        </label>
+                    </div>
+                    <div class="control-group">
+                        <label>
+                            <input type="checkbox" id="allow-resize" checked> Allow resizing
+                        </label>
+                    </div>
+                    <button class="demo-button" onclick="updateBehavior()">Update Behavior</button>
+                </div>
+            </div>
+
+            <!-- Mobile Demo -->
+            <div class="demo-card">
+                <h3>📱 Mobile Experience</h3>
+                <p>See how the widget adapts beautifully to mobile devices.</p>
+                <button class="demo-button" onclick="simulateMobile()">Simulate Mobile</button>
+                <button class="demo-button secondary" onclick="resetViewport()">Reset Viewport</button>
+                <p style="font-size: 0.875rem; margin-top: 10px; color: #6b7280;">
+                    Resize your browser window or use dev tools to see mobile adaptation.
+                </p>
+            </div>
+        </div>
+
+        <!-- Integration Code -->
+        <div class="code-section">
+            <h3>💻 Integration Code</h3>
+            <p style="margin-bottom: 20px; color: #6b7280;">Copy and paste this code into your website to add the AI receptionist widget:</p>
+
+            <div class="code-block">
+&lt;!-- AI Receptionist Widget --&gt;
+&lt;script src="https://yourhost.com/widget-loader.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  QuantumChat.init({
+    businessId: 'your-business-id',
+    position: 'bottom-right',
+    size: 'medium',
+    primaryColor: '#3b82f6',
+    autoExpand: false,
+
+    // Event handlers
+    onReady: function() {
+      console.log('Widget is ready');
+    },
+    onExpanded: function() {
+      console.log('Widget expanded');
+    }
+  });
+&lt;/script&gt;
+            </div>
+
+            <button class="demo-button" onclick="copyCode()">Copy Code</button>
+            <button class="demo-button secondary" onclick="showAdvancedConfig()">Show Advanced Config</button>
+        </div>
+
+        <!-- Advanced Configuration -->
+        <div id="advanced-config" class="code-section" style="display: none;">
+            <h3>🔧 Advanced Configuration</h3>
+            <div class="code-block">
+&lt;script&gt;
+  QuantumChat.init({
+    // Required
+    businessId: 'your-business-id',
+
+    // Widget appearance
+    position: 'bottom-right', // 'bottom-right', 'bottom-left', 'bottom-center', 'sidebar-right', 'sidebar-left'
+    size: 'medium', // 'compact', 'medium', 'large'
+
+    // Widget behavior
+    allowResize: true,
+    showPulse: true,
+    showOverlay: true,
+    autoExpand: false,
+    expandDelay: 3000,
+
+    // Custom branding
+    primaryColor: '#3b82f6',
+    secondaryColor: '#1e40af',
+
+    // Integration options
+    apiUrl: 'https://api.yourcompany.com', // Custom API endpoint
+    containerId: 'widget-container', // Specific container element
+
+    // Event handlers
+    onReady: function() {
+      console.log('Widget initialized');
+    },
+    onExpanded: function(data) {
+      console.log('Widget expanded', data);
+      // Track analytics, etc.
+    },
+    onMinimized: function() {
+      console.log('Widget minimized');
+    },
+    onClosed: function() {
+      console.log('Widget closed');
+    },
+    onError: function(error) {
+      console.error('Widget error', error);
+    }
+  });
+&lt;/script&gt;
+            </div>
+        </div>
+    </div>
+
+    <!-- Load the widget -->
+    <script src="/widget-loader.js"></script>
+    <script>
+        let currentWidget = null;
+
+        // Initialize basic widget
+        function initBasicWidget() {
+            destroyWidget();
+            currentWidget = QuantumChat.init({
+                businessId: 'demo',
+                position: 'bottom-right',
+                size: 'medium',
+                onReady: function() {
+                    console.log('Demo widget ready');
+                },
+                onExpanded: function() {
+                    console.log('Demo widget expanded');
+                },
+                onClosed: function() {
+                    currentWidget = null;
+                }
+            });
+        }
+
+        // Update position
+        function updatePosition() {
+            const position = document.getElementById('position-select').value;
+            if (currentWidget) {
+                currentWidget.updateConfig({ position });
+            } else {
+                initBasicWidget();
+                setTimeout(() => {
+                    if (currentWidget) {
+                        currentWidget.updateConfig({ position });
+                    }
+                }, 100);
+            }
+        }
+
+        // Update size
+        function updateSize() {
+            const size = document.getElementById('size-select').value;
+            if (currentWidget) {
+                currentWidget.updateConfig({ size });
+            } else {
+                initBasicWidget();
+                setTimeout(() => {
+                    if (currentWidget) {
+                        currentWidget.updateConfig({ size });
+                    }
+                }, 100);
+            }
+        }
+
+        // Update colors
+        function updateColors() {
+            const primaryColor = document.getElementById('primary-color').value;
+            const secondaryColor = document.getElementById('secondary-color').value;
+
+            if (currentWidget) {
+                currentWidget.updateConfig({
+                    primaryColor,
+                    secondaryColor
+                });
+            } else {
+                initBasicWidget();
+                setTimeout(() => {
+                    if (currentWidget) {
+                        currentWidget.updateConfig({
+                            primaryColor,
+                            secondaryColor
+                        });
+                    }
+                }, 100);
+            }
+        }
+
+        // Update behavior
+        function updateBehavior() {
+            const autoExpand = document.getElementById('auto-expand').checked;
+            const showPulse = document.getElementById('show-pulse').checked;
+            const allowResize = document.getElementById('allow-resize').checked;
+
+            if (currentWidget) {
+                currentWidget.updateConfig({
+                    autoExpand,
+                    showPulse,
+                    allowResize
+                });
+            } else {
+                initBasicWidget();
+                setTimeout(() => {
+                    if (currentWidget) {
+                        currentWidget.updateConfig({
+                            autoExpand,
+                            showPulse,
+                            allowResize
+                        });
+                    }
+                }, 100);
+            }
+        }
+
+        // Destroy widget
+        function destroyWidget() {
+            if (currentWidget) {
+                currentWidget.destroy();
+                currentWidget = null;
+            }
+        }
+
+        // Simulate mobile
+        function simulateMobile() {
+            document.body.style.maxWidth = '375px';
+            document.body.style.margin = '0 auto';
+            document.body.style.border = '2px solid #333';
+            document.body.style.borderRadius = '20px';
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        }
+
+        // Reset viewport
+        function resetViewport() {
+            document.body.style.maxWidth = '';
+            document.body.style.margin = '';
+            document.body.style.border = '';
+            document.body.style.borderRadius = '';
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        }
+
+        // Copy code
+        function copyCode() {
+            const codeText = `<!-- AI Receptionist Widget -->
+<script src="https://yourhost.com/widget-loader.js"></script>
+<script>
+  QuantumChat.init({
+    businessId: 'your-business-id',
+    position: 'bottom-right',
+    size: 'medium',
+    primaryColor: '#3b82f6',
+    autoExpand: false,
+
+    // Event handlers
+    onReady: function() {
+      console.log('Widget is ready');
+    },
+    onExpanded: function() {
+      console.log('Widget expanded');
+    }
+  });
+</script>`;
+
+            navigator.clipboard.writeText(codeText).then(() => {
+                alert('Code copied to clipboard!');
+            }).catch(() => {
+                prompt('Copy this code:', codeText);
+            });
+        }
+
+        // Show advanced config
+        function showAdvancedConfig() {
+            const advancedConfig = document.getElementById('advanced-config');
+            if (advancedConfig.style.display === 'none') {
+                advancedConfig.style.display = 'block';
+                event.target.textContent = 'Hide Advanced Config';
+            } else {
+                advancedConfig.style.display = 'none';
+                event.target.textContent = 'Show Advanced Config';
+            }
+        }
+
+        // Initialize basic widget on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initBasicWidget, 1000);
+        });
+    </script>
+</body>
+</html>
