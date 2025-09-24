@@ -407,6 +407,7 @@ onMounted(() => {
     console.log('ContentPanel: Received show-content-by-id event:', event.detail)
     const contentId = event.detail
     console.log('ContentPanel: Calling showContentById with:', contentId)
+    console.log('ContentPanel: Available content:', props.business.content.map(c => ({id: c.id, title: c.title})))
     contentStore.showContentById(contentId, props.business.content)
   })
 })

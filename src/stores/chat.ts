@@ -72,10 +72,12 @@ export const useChatStore = defineStore('chat', () => {
       // Handle content suggestions
       if (response.suggestedContent && response.suggestedContent.length > 0) {
         console.log('Chat: Suggesting content:', response.suggestedContent)
+        // Extract IDs from ContentItem objects
+        const contentIds = response.suggestedContent.map((item: any) => item.id)
         // Emit event for content panel to show suggested content
         window.dispatchEvent(new CustomEvent('ai-suggest-content', {
           detail: {
-            contentIds: response.suggestedContent,
+            contentIds: contentIds,
             intent: response.intent
           }
         }))
@@ -106,12 +108,43 @@ export const useChatStore = defineStore('chat', () => {
         // Search static knowledge base
         if (business?.knowledgeBase) {
           console.log(`Searching static knowledge for message: "${message}"`)
-          const searchTerms = lowerMessage.split(' ')
 
-          const knowledgeMatches = business.knowledgeBase.filter(item => {
+          // Filter out common words and split into meaningful terms
+          const stopWords = ['can', 'i', 'a', 'the', 'is', 'are', 'do', 'does', 'how', 'what', 'where', 'when', 'why', 'you', 'your', 'me', 'my']
+          const searchTerms = lowerMessage.split(' ').filter(term =>
+            term.length > 2 && !stopWords.includes(term)
+          )
+
+          console.log(`Search terms after filtering: ${searchTerms}`)
+
+          const knowledgeMatches = business.knowledgeBase.map(item => {
             const searchableText = [item.question, item.answer, ...item.tags].join(' ').toLowerCase()
-            return searchTerms.some(term => searchableText.includes(term))
-          }).sort((a, b) => b.priority - a.priority)
+
+            // Check for exact question match first (highest score)
+            if (item.question.toLowerCase() === lowerMessage) {
+              return { ...item, score: 100 }
+            }
+
+            // Check for partial question match
+            if (item.question.toLowerCase().includes(lowerMessage) || lowerMessage.includes(item.question.toLowerCase())) {
+              return { ...item, score: 90 }
+            }
+
+            // Count matching search terms
+            let matchCount = 0
+            searchTerms.forEach(term => {
+              if (searchableText.includes(term)) {
+                matchCount++
+              }
+            })
+
+            // Only include if at least one meaningful term matches
+            if (matchCount > 0) {
+              return { ...item, score: matchCount * 10 + item.priority }
+            }
+
+            return null
+          }).filter(item => item !== null).sort((a, b) => b.score - a.score)
 
           if (knowledgeMatches.length > 0) {
             const bestMatch = knowledgeMatches[0]
@@ -119,7 +152,7 @@ export const useChatStore = defineStore('chat', () => {
             intent = 'knowledge_base'
             confidence = 0.9
             suggestedContentIds = bestMatch.contentIds || []
-            console.log(`Using static knowledge base response from: ${bestMatch.id}`)
+            console.log(`Using static knowledge base response from: ${bestMatch.id} (score: ${bestMatch.score})`)
           }
         }
 
@@ -163,7 +196,7 @@ export const useChatStore = defineStore('chat', () => {
 
         console.log(`Final AI response:`, {
           message: response,
-          suggestedContent,
+          suggestedContent: suggestedContent.map(c => ({id: c.id, title: c.title})),
           intent,
           confidence
         })
