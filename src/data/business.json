@@ -1,6 +1,6 @@
 {
   "id": "demo",
-  "name": "Quantum Tech Solutions",
+  "name": "Quantumtask AI",
   "description": "Leading provider of AI and quantum computing solutions for enterprise clients",
   "industry": "Technology",
   "website": "https://openai.com",
@@ -10,25 +10,12 @@
     "logo": "/logos/quantum-tech.svg",
     "font": "Inter"
   },
-  "scrapingConfig": {
-    "enabled": true,
-    "website": "https://openai.com",
-    "selectors": {
-      "about": "main, .main-content, [role='main']",
-      "services": ".products, .services, .offerings",
-      "pricing": ".pricing, .plans, .cost",
-      "contact": ".contact, .reach-us, footer"
-    },
-    "contentPriority": ["about", "services", "pricing", "contact"],
-    "updateSchedule": "weekly",
-    "excludeSelectors": ["nav", "header", ".navigation", "script", "style", ".cookie-banner"]
-  },
   "content": [
     {
       "id": "company-brochure",
       "type": "website",
       "title": "Company Overview",
-      "description": "Complete overview of our services and capabilities",
+      "description": "Complete overview of Quantumtask AI services and capabilities",
       "url": "https://openai.com/about",
       "tags": ["overview", "company", "services"],
       "category": "company"
@@ -37,7 +24,7 @@
       "id": "pricing-guide",
       "type": "website",
       "title": "Pricing Guide",
-      "description": "Detailed pricing for all our services",
+      "description": "Detailed pricing for all Quantumtask AI services",
       "url": "https://openai.com/pricing",
       "tags": ["pricing", "costs", "plans"],
       "category": "pricing"
@@ -91,7 +78,7 @@
       "id": "team-photos",
       "type": "website",
       "title": "Meet Our Team",
-      "description": "Learn about our expert team members",
+      "description": "Learn about Quantumtask AI's expert team members",
       "url": "https://openai.com/about",
       "tags": ["team", "people", "about"],
       "category": "company"
@@ -104,13 +91,39 @@
       "url": "https://www.youtube.com/embed/O5nskjZ_GoI",
       "tags": ["technical", "explanation", "ai"],
       "category": "education"
+    },
+    {
+      "id": "schedule-meeting",
+      "type": "booking",
+      "title": "Schedule a Consultation",
+      "description": "Book a meeting with Quantumtask AI specialists",
+      "data": {
+        "services": [
+          {
+            "id": "consultation",
+            "name": "AI Strategy Consultation",
+            "duration": 60,
+            "price": 150,
+            "description": "Discuss your AI implementation strategy"
+          },
+          {
+            "id": "demo",
+            "name": "Product Demo",
+            "duration": 30,
+            "price": 0,
+            "description": "See our quantum computing solutions in action"
+          }
+        ]
+      },
+      "tags": ["schedule", "meeting", "appointment"],
+      "category": "appointment"
     }
   ],
   "knowledgeBase": [
     {
       "id": "kb-1",
       "question": "What services do you offer?",
-      "answer": "We provide AI solutions, quantum computing services, and technology consulting for enterprise clients.",
+      "answer": "Quantumtask AI provides AI solutions, quantum computing services, and technology consulting for enterprise clients.",
       "tags": ["services", "offerings"],
       "contentIds": ["company-brochure"],
       "priority": 10
@@ -118,7 +131,7 @@
     {
       "id": "kb-2",
       "question": "How much do your services cost?",
-      "answer": "Our pricing varies based on the scope and complexity of your project. Let me show you our pricing guide.",
+      "answer": "Quantumtask AI pricing varies based on the scope and complexity of your project. Let me show you our pricing guide.",
       "tags": ["pricing", "cost", "price"],
       "contentIds": ["pricing-guide"],
       "priority": 9
@@ -126,7 +139,7 @@
     {
       "id": "kb-3",
       "question": "Can I see a demo?",
-      "answer": "Absolutely! I have a great product demonstration video that shows our AI platform in action.",
+      "answer": "Absolutely! I have a great product demonstration video that shows Quantumtask AI's platform in action.",
       "tags": ["demo", "demonstration", "product"],
       "contentIds": ["product-demo"],
       "priority": 8
@@ -134,7 +147,7 @@
     {
       "id": "kb-4",
       "question": "How can I contact you?",
-      "answer": "I can help you get in touch with our team right now. Let me pull up our contact form.",
+      "answer": "I can help you get in touch with the Quantumtask AI team right now. Let me pull up our contact form.",
       "tags": ["contact", "reach", "touch"],
       "contentIds": ["contact-form"],
       "priority": 7
@@ -142,14 +155,14 @@
     {
       "id": "kb-5",
       "question": "Do you have case studies?",
-      "answer": "Yes! We have several success stories from our clients. Let me show you our case studies.",
+      "answer": "Yes! Quantumtask AI has several success stories from our clients. Let me show you our case studies.",
       "tags": ["case", "studies", "examples", "success"],
       "contentIds": ["case-studies"],
       "priority": 6
     }
   ],
   "settings": {
-    "welcomeMessage": "Hello! I'm your AI assistant at Quantum Tech Solutions. I can help you learn about our services, pricing, and connect you with our team. How can I assist you today?",
+    "welcomeMessage": "Hello! I'm your AI assistant at Quantumtask AI. I can help you learn about our services, pricing, and connect you with our team. How can I assist you today?",
     "aiPersonality": "professional and helpful",
     "enableVoice": true,
     "enableLeadCapture": true,

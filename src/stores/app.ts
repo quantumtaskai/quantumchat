@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { BusinessConfig, AppState } from '@/types'
-import { useKnowledgeStore } from '@/stores/knowledge'
-import { contentScheduler } from '@/services/contentScheduler'
 
 export const useAppStore = defineStore('app', () => {
   // State
@@ -25,17 +23,8 @@ export const useAppStore = defineStore('app', () => {
     error.value = null
 
     try {
-      // Load business configuration first
+      // Load business configuration
       await loadBusinessConfig()
-
-      // Initialize knowledge store with business data
-      const knowledgeStore = useKnowledgeStore()
-      knowledgeStore.initialize(currentBusiness.value)
-
-      // Start automated scraping if business is loaded and has scraping config
-      if (currentBusiness.value?.scrapingConfig?.enabled) {
-        await initializeBusinessScraping(currentBusiness.value)
-      }
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to initialize application'
       console.error('App initialization error:', err)
@@ -49,7 +38,7 @@ export const useAppStore = defineStore('app', () => {
       let business = null
 
       // Try to load from external API first (if configured)
-      const apiUrl = import.meta.env.VITE_API_URL
+      const apiUrl = (import.meta as any).env?.VITE_API_URL
       if (apiUrl) {
         try {
           const response = await fetch(`${apiUrl}/business`)
@@ -89,50 +78,21 @@ export const useAppStore = defineStore('app', () => {
     error.value = null
   }
 
-  async function initializeBusinessScraping(business: BusinessConfig) {
-    try {
-      const knowledgeStore = useKnowledgeStore()
-      
-      // Check if initial scraping is needed
-      const needsScrapingCheck = contentScheduler.needsScraping(business)
 
-      if (needsScrapingCheck) {
-        console.log(`Initial scraping needed for ${business.name}`)
-        await knowledgeStore.scrapeBusinessWebsite(business)
-      } else {
-        console.log(`Skipping initial scraping for ${business.name} - not needed`)
-      }
-      
-      // Schedule automated updates
-      contentScheduler.scheduleBusinessScraping(business)
-      
-      console.log(`Automated scraping initialized for ${business.name}`)
-    } catch (error) {
-      console.error(`Failed to initialize scraping for ${business.name}:`, error)
-    }
+  function toggleMinimized() {
+    isMinimized.value = !isMinimized.value
   }
 
-  function getScrapingStatus() {
-    if (!currentBusiness.value) return null
-    
-    return {
-      isScheduled: contentScheduler.isScheduled(),
-      needsScraping: contentScheduler.needsScraping(currentBusiness.value),
-      nextScrape: contentScheduler.getNextScrapeTime(currentBusiness.value),
-      schedule: currentBusiness.value.scrapingConfig?.updateSchedule || 'manual'
-    }
+  function setError(message: string) {
+    error.value = message
   }
 
-  async function forceScrape() {
-    if (!currentBusiness.value) return false
-    
-    try {
-      return await contentScheduler.forceScrapeBusiness(currentBusiness.value)
-    } catch (error) {
-      console.error('Force scrape failed:', error)
-      return false
-    }
+  function clearError() {
+    error.value = null
   }
+
+
+
 
   return {
     // State
@@ -149,9 +109,6 @@ export const useAppStore = defineStore('app', () => {
     loadBusinessConfig,
     toggleMinimized,
     setError,
-    clearError,
-    initializeBusinessScraping,
-    getScrapingStatus,
-    forceScrape
+    clearError
   }
 })

@@ -1,20 +1,20 @@
 <template>
-  <div class="content-panel h-full flex flex-col bg-white modern-typography">
+  <div class="content-panel h-full flex flex-col bg-white">
     <!-- Header -->
-    <div class="content-header px-4 py-3 border-b border-gray-200 bg-gray-50">
+    <div class="content-header px-4 py-3 border-b border-gray-200 surface">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2">
           <button
             v-if="contentStore.canGoBack"
             @click="contentStore.goBack()"
-            class="p-1 text-gray-400 hover:text-gray-600 rounded"
+            class="p-2 text-gray-500 hover:text-primary-600 rounded-lg hover:bg-white/20 transition-all duration-300 backdrop-blur-sm border border-white/10"
             title="Go back"
           >
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
             </svg>
           </button>
-          
+
           <div class="flex-1">
             <h3 v-if="contentStore.currentItem" class="font-semibold text-gray-900 truncate">
               {{ contentStore.currentItem.title }}
@@ -24,37 +24,37 @@
             </h3>
           </div>
         </div>
-        
+
         <div class="flex items-center space-x-1">
           <!-- Download Button -->
           <button
             v-if="contentStore.currentItem && canDownload"
             @click="downloadContent"
-            class="p-1 text-gray-400 hover:text-gray-600 rounded"
+            class="btn btn-ghost p-2 text-gray-500 hover:text-primary-600"
             title="Download"
           >
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
             </svg>
           </button>
-          
+
           <!-- Share Button -->
           <button
             v-if="contentStore.currentItem"
             @click="shareContent"
-            class="p-1 text-gray-400 hover:text-gray-600 rounded"
+            class="btn btn-ghost p-2 text-gray-500 hover:text-primary-600"
             title="Share"
           >
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.6 20.92,19A2.84,2.84 0 0,0 18,16.08Z"/>
             </svg>
           </button>
-          
+
           <!-- Close Button -->
           <button
             v-if="contentStore.currentItem"
             @click="contentStore.clearContent()"
-            class="p-1 text-gray-400 hover:text-gray-600 rounded"
+            class="btn btn-ghost p-2 text-gray-500 hover:text-red-600"
             title="Close"
           >
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -85,47 +85,47 @@
       </div>
 
       <!-- Default State - Content Library -->
-      <div v-else class="p-4 h-full overflow-y-auto custom-scrollbar">
+      <div v-else class="p-4 h-full overflow-y-auto clean-scrollbar">
         <div class="space-y-6">
           <!-- Welcome Message -->
           <div class="text-center py-8">
-            <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
-              <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+            <div class="w-20 h-20 mx-auto mb-6 bg-primary-100 rounded-2xl flex items-center justify-center shadow-clean">
+              <svg class="w-10 h-10 text-primary-600" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
               </svg>
             </div>
-            <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ business.name }} Resources</h2>
-            <p class="text-gray-600">Browse our resources or ask me to show you specific information</p>
+            <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ business.name }} Resources</h2>
+            <p class="text-sm text-gray-600">Browse our resources or ask me to show you specific information</p>
           </div>
 
           <!-- Content Categories -->
-          <div class="space-y-4">
+          <div class="space-y-6">
             <div v-for="category in contentCategories" :key="category.name" class="content-category">
-              <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
-                <component :is="category.icon" class="w-5 h-5 mr-2 text-blue-600" />
+              <h3 class="font-semibold text-gray-900 mb-3 flex items-center text-base">
+                <component :is="category.icon" class="w-5 h-5 mr-2 text-primary-600" />
                 {{ category.name }}
               </h3>
               <div class="grid gap-3">
                 <div
-                  v-for="item in category.items"
+                  v-for="(item, index) in category.items"
                   :key="item.id"
                   @click="contentStore.showContent(item)"
-                  class="content-card p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-all duration-200"
+                  class="card-interactive group animate-fade-in"
                 >
                   <div class="flex items-start space-x-3">
                     <div class="flex-shrink-0">
                       <component :is="getTypeIcon(item.type)" class="w-5 h-5 text-gray-500" />
                     </div>
                     <div class="flex-1 min-w-0">
-                      <h4 class="font-medium text-gray-900 truncate">{{ item.title }}</h4>
-                      <p v-if="item.description" class="text-sm text-gray-600 mt-1 line-clamp-2">
+                      <h4 class="font-medium text-gray-900 truncate group-hover:text-primary-600 transition-colors text-sm">{{ item.title }}</h4>
+                      <p v-if="item.description" class="text-xs text-gray-600 mt-1 line-clamp-2">
                         {{ item.description }}
                       </p>
                       <div class="flex items-center mt-2 space-x-2">
-                        <span 
-                          v-for="tag in item.tags.slice(0, 2)" 
+                        <span
+                          v-for="tag in item.tags.slice(0, 2)"
                           :key="tag"
-                          class="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded"
+                          class="inline-block px-2 py-0.5 text-xs bg-gray-100 text-gray-600 rounded"
                         >
                           {{ tag }}
                         </span>
@@ -142,18 +142,18 @@
 
           <!-- Popular Content -->
           <div v-if="popularContent.length > 0" class="space-y-3">
-            <h3 class="font-semibold text-gray-900 flex items-center">
-              <svg class="w-5 h-5 mr-2 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+            <h3 class="font-bold text-gray-900 flex items-center text-lg mb-4">
+              <svg class="w-6 h-6 mr-3 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z"/>
               </svg>
               Popular Resources
             </h3>
-            <div class="grid gap-2">
+            <div class="grid-responsive">
               <div
                 v-for="item in popularContent"
                 :key="item.id"
                 @click="contentStore.showContent(item)"
-                class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                class="flex items-center space-x-4 p-3 hover:bg-white/30 rounded-xl cursor-pointer transition-all duration-300 glass-morphism border border-white/10 hover:shadow-lg hover:-translate-y-0.5"
               >
                 <component :is="getTypeIcon(item.type)" class="w-4 h-4 text-gray-400" />
                 <span class="text-sm text-gray-700 truncate">{{ item.title }}</span>
@@ -165,36 +165,66 @@
     </div>
 
     <!-- Related Content -->
-    <div v-if="relatedContent.length > 0" class="related-content border-t border-gray-200 p-3 bg-gray-50">
+    <div v-if="relatedContent.length > 0" class="related-content border-t border-gray-200/30 p-3 glass-morphism backdrop-blur-md">
       <h4 class="text-sm font-medium text-gray-700 mb-2">Related Content</h4>
       <div class="space-y-1">
         <div
           v-for="item in relatedContent"
           :key="item.id"
           @click="contentStore.showContent(item)"
-          class="flex items-center space-x-2 p-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-white rounded cursor-pointer transition-colors"
+          class="flex items-center space-x-3 p-3 text-sm text-gray-600 hover:text-primary-600 hover:bg-white/50 rounded-xl cursor-pointer transition-all duration-300 backdrop-blur-sm border border-white/10 hover:shadow-md"
         >
           <component :is="getTypeIcon(item.type)" class="w-4 h-4" />
           <span class="truncate">{{ item.title }}</span>
         </div>
       </div>
     </div>
+
+    <!-- Calendar Footer -->
+    <div class="calendar-footer border-t border-gray-200/30 glass-morphism p-3 backdrop-blur-md shadow-glass">
+      <div class="grid grid-cols-2 gap-2">
+        <!-- Schedule Meeting Button -->
+        <button
+          @click="openMeetingScheduler"
+          class="footer-btn bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white shadow-lg hover:shadow-xl"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z"/>
+          </svg>
+          <span class="text-sm font-medium">Schedule</span>
+        </button>
+
+        <!-- Open Calendar Button -->
+        <button
+          @click="openOSCalendarApp"
+          class="footer-btn bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+          </svg>
+          <span class="text-sm font-medium">Calendar</span>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, h, onMounted } from 'vue'
+import { computed, h, onMounted, defineAsyncComponent } from 'vue'
 import { useContentStore } from '@/stores/content'
 import type { BusinessConfig, ContentItem } from '@/types'
 
-// Content components
-import PDFViewer from './PDFViewer.vue'
-import VideoPlayer from './VideoPlayer.vue'
-import ImageViewer from './ImageViewer.vue'
-import FormDisplay from './FormDisplay.vue'
-import CalculatorWidget from './CalculatorWidget.vue'
-import BookingWidget from './BookingWidget.vue'
-import WebsiteViewer from './WebsiteViewer.vue'
+// Clear any cached data on component load
+localStorage.removeItem('ai-receptionist-knowledge')
+
+// Lazy-loaded content components for better performance
+const PDFViewer = defineAsyncComponent(() => import('./PDFViewer.vue'))
+const VideoPlayer = defineAsyncComponent(() => import('./VideoPlayer.vue'))
+const ImageViewer = defineAsyncComponent(() => import('./ImageViewer.vue'))
+const FormDisplay = defineAsyncComponent(() => import('./FormDisplay.vue'))
+const CalculatorWidget = defineAsyncComponent(() => import('./CalculatorWidget.vue'))
+const BookingWidget = defineAsyncComponent(() => import('./BookingWidget.vue'))
+const WebsiteViewer = defineAsyncComponent(() => import('./WebsiteViewer.vue'))
 
 interface Props {
   business: BusinessConfig
@@ -313,8 +343,34 @@ function getContentComponent(type: string) {
     booking: BookingWidget,
     website: WebsiteViewer
   }
-  
+
   return componentMap[type as keyof typeof componentMap] || PDFViewer
+}
+
+// Calendar footer methods
+function openMeetingScheduler() {
+  // Find the meeting scheduler content item
+  const meetingScheduler = props.business.content.find(item => item.id === 'schedule-meeting')
+  if (meetingScheduler) {
+    // Show the meeting scheduler in the content panel
+    contentStore.showContent(meetingScheduler)
+
+    // Track analytics event
+    window.dispatchEvent(new CustomEvent('analytics-event', {
+      detail: {
+        type: 'footer_schedule_clicked',
+        data: {
+          contentId: 'schedule-meeting',
+          business: props.business.name
+        }
+      }
+    }))
+  }
+}
+
+function openOSCalendarApp() {
+  // Open a simple calendar URL
+  window.open('https://calendar.google.com', '_blank')
 }
 
 function downloadContent() {
@@ -406,8 +462,77 @@ onMounted(() => {
 }
 
 .content-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.content-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.content-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+.content-card:hover::before {
+  left: 100%;
+}
+
+/* Enhanced Bento Grid Responsive Behavior */
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .bento-item-large,
+  .bento-item-wide,
+  .bento-item-tall {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bento-item-large {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+}
+
+/* Bento Item Hover Effects */
+.bento-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.bento-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.bento-item:hover::after {
+  opacity: 1;
 }
 
 .line-clamp-2 {
@@ -429,5 +554,36 @@ onMounted(() => {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Calendar Footer Styles */
+.calendar-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+.footer-btn {
+  @apply flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.footer-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.footer-btn:active {
+  transform: translateY(0);
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .footer-btn {
+    @apply py-2 px-3 text-xs;
+  }
+
+  .footer-btn svg {
+    @apply w-3 h-3;
+  }
 }
 </style>

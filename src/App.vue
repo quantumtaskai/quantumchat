@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="font-sans antialiased bg-transparent">
+  <div id="app" class="font-sans antialiased bg-gray-50 min-h-screen">
     <!-- Widget Mode -->
     <WidgetApp v-if="isWidgetMode" />
 
@@ -10,17 +10,17 @@
     />
 
     <!-- Loading State -->
-    <div v-else-if="appStore.isLoading" class="flex items-center justify-center min-h-screen bg-gray-50">
+    <div v-else-if="appStore.isLoading" class="flex items-center justify-center min-h-screen">
       <div class="text-center">
-        <div class="loading-spinner mx-auto mb-4"></div>
-        <p class="text-gray-600">Loading AI Receptionist...</p>
+        <div class="loading-pulse w-8 h-8 mx-auto mb-4 rounded"></div>
+        <p class="text-gray-600">Loading Quantumtask AI...</p>
       </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="appStore.error" class="flex items-center justify-center min-h-screen bg-gray-50">
-      <div class="text-center max-w-md">
-        <div class="text-red-500 mb-4">
+    <div v-else-if="appStore.error" class="flex items-center justify-center min-h-screen">
+      <div class="card text-center max-w-md mx-4">
+        <div class="text-error mb-4">
           <svg class="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
           </svg>
@@ -29,7 +29,7 @@
         <p class="text-gray-600 mb-4">{{ appStore.error }}</p>
         <button
           @click="appStore.initialize()"
-          class="btn-primary"
+          class="btn btn-primary"
         >
           Try Again
         </button>
@@ -37,8 +37,8 @@
     </div>
 
     <!-- No Business Configuration -->
-    <div v-else class="flex items-center justify-center min-h-screen bg-gray-50">
-      <div class="text-center max-w-md">
+    <div v-else class="flex items-center justify-center min-h-screen">
+      <div class="card text-center max-w-md mx-4">
         <div class="text-gray-400 mb-4">
           <svg class="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 24 24">
             <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
@@ -72,18 +72,3 @@ onMounted(() => {
 })
 </script>
 
-<style>
-.loading-spinner {
-  border: 2px solid #f3f4f6;
-  border-top: 2px solid #3b82f6;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-</style>

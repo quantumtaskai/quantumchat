@@ -1,27 +1,32 @@
 <template>
-  <div class="chat-panel flex flex-col h-full bg-gray-50 modern-typography">
+  <div class="chat-panel flex flex-col h-full bg-gradient-to-b from-gray-50/80 to-white/60 modern-typography">
     <!-- Messages Area -->
-    <div 
+    <div
       ref="messagesContainer"
-      class="messages-area flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar"
+      class="messages-area flex-1 overflow-y-auto p-4 custom-scrollbar"
     >
-      <TransitionGroup name="message" tag="div">
-        <div
-          v-for="message in chatStore.messages"
-          :key="message.id"
-          class="message-wrapper"
-        >
-          <MessageBubble :message="message" :business="business" />
-        </div>
-      </TransitionGroup>
-      
-      <!-- Typing Indicator -->
-      <div v-if="chatStore.isTyping" class="flex justify-start">
-        <div class="bg-white border border-gray-200 rounded-2xl px-4 py-3 max-w-xs shadow-sm">
-          <div class="flex items-center space-x-2">
-            <div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
-              <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.09 0 2.14-.18 3.12-.5l5.88 1.92-1.92-5.88c.32-.98.5-2.03.5-3.12 0-5.52-4.48-10-10-10z"/>
+      <!-- Regular rendering for message lists -->
+      <div class="space-y-4">
+        <TransitionGroup name="message" tag="div">
+          <div
+            v-for="message in chatStore.messages"
+            :key="message.id"
+            class="message-wrapper"
+            v-memo="[message.id, message.content, message.timestamp]"
+          >
+            <MessageBubble :message="message" :business="business" />
+          </div>
+        </TransitionGroup>
+      </div>
+
+      <!-- Enhanced Typing Indicator -->
+      <div v-if="chatStore.isTyping" class="flex justify-start animate-fade-in">
+        <div class="glass-morphism rounded-2xl px-4 py-3 max-w-xs shadow-glass animate-pulse">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center border border-primary-200">
+              <!-- Modern AI Assistant Icon for typing indicator -->
+              <svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
               </svg>
             </div>
             <div class="typing-dots">
@@ -34,14 +39,14 @@
       </div>
     </div>
 
-    <!-- Quick Action Buttons -->
+    <!-- Enhanced Quick Action Buttons -->
     <div v-if="showQuickActions" class="quick-actions px-4 py-2">
       <div class="flex flex-wrap gap-2">
         <button
           v-for="action in quickActions"
           :key="action.id"
           @click="sendQuickAction(action.message)"
-          class="px-3 py-1 text-sm bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors"
+          class="px-3 py-1.5 text-xs glass-morphism rounded-full hover:bg-white/90 transition-all duration-200 font-medium text-gray-700 hover:text-gray-900 animate-slide-in-right hover-lift"
         >
           {{ action.label }}
         </button>
@@ -49,31 +54,50 @@
     </div>
 
     <!-- Input Area -->
-    <div class="input-area bg-white border-t border-gray-200 p-4">
+    <div class="input-area glass-morphism border-t border-white/30 p-4">
       <!-- Voice Status -->
-      <div v-if="chatStore.isListening" class="mb-3">
-        <div class="flex items-center justify-center space-x-2 text-sm text-blue-600">
+      <div v-if="chatStore.isListening" class="mb-2">
+        <div class="flex items-center justify-center space-x-2 text-xs text-blue-600">
           <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
           <span>Listening... Speak now</span>
         </div>
       </div>
 
       <!-- Input Row -->
-      <div class="flex items-end space-x-3">
+      <div class="flex items-end space-x-2">
         <!-- Voice Button -->
         <button
           @click="toggleVoiceInput"
           :disabled="!voiceSupported"
-          class="flex-shrink-0 p-3 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="flex-shrink-0 p-2 rounded-lg transition-all duration-200 focus:outline-none glass-morphism hover:bg-white/90"
           :class="voiceButtonClasses"
           :title="voiceButtonTitle"
         >
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-            <path v-if="!chatStore.isListening" d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
-            <path v-if="!chatStore.isListening" d="M19 10v1a7 7 0 0 1-14 0v-1"/>
-            <path v-if="!chatStore.isListening" d="M12 19v3"/>
-            <path v-if="!chatStore.isListening" d="M8 23h8"/>
-            <path v-if="chatStore.isListening" d="M6 6h12v12H6z"/>
+          <!-- Modern Microphone Icon -->
+          <svg v-if="!chatStore.isListening" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+          </svg>
+          <!-- Stop Recording Icon -->
+          <svg v-else class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 6h12v12H6z"/>
+          </svg>
+        </button>
+
+        <!-- Mute Button -->
+        <button
+          @click="toggleMuteAgent"
+          :disabled="!voiceSupported"
+          class="flex-shrink-0 p-2 rounded-lg transition-all duration-200 focus:outline-none glass-morphism hover:bg-white/90"
+          :class="muteButtonClasses"
+          :title="muteButtonTitle"
+        >
+          <!-- Modern Speaker On Icon -->
+          <svg v-if="!isMuted" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          </svg>
+          <!-- Modern Speaker Off (Muted) Icon -->
+          <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v3m0 4v2c0 .891-1.077 1.337-1.707.707L5.586 15M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>
           </svg>
         </button>
 
@@ -87,7 +111,7 @@
             @focus="emit('inputFocus')"
             placeholder="Type your message or use the microphone..."
             rows="1"
-            class="w-full px-4 py-3 border border-gray-300 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="w-full px-4 py-3 glass-morphism rounded-xl resize-none focus:outline-none focus:ring-1 focus:ring-primary-400/40 focus:border-primary-300/50 transition-all duration-200 placeholder:text-gray-500 text-gray-800 text-sm gpu-accelerated"
             :class="{ 'pr-12': inputMessage.trim() }"
             :disabled="chatStore.isTyping"
           ></textarea>
@@ -143,12 +167,14 @@ const emit = defineEmits<{
 }>()
 
 const chatStore = useChatStore()
-const { 
-  isSupported: voiceSupported, 
-  isListening, 
-  startListening, 
+const {
+  isSupported: voiceSupported,
+  isListening,
+  isMuted,
+  startListening,
   stopListening,
-  speak
+  speak,
+  toggleMute
 } = useVoice()
 
 // Refs
@@ -175,20 +201,31 @@ const canSend = computed(() => {
 })
 
 const voiceButtonClasses = computed(() => ({
-  'bg-red-500 text-white shadow-lg': chatStore.isListening,
-  'bg-blue-500 text-white hover:bg-blue-600': !chatStore.isListening && voiceSupported.value,
-  'bg-gray-300 text-gray-500 cursor-not-allowed': !voiceSupported.value,
+  'text-red-600 bg-red-50 border-red-200': chatStore.isListening,
+  'text-primary-600 hover:text-primary-700': !chatStore.isListening && voiceSupported.value,
+  'text-gray-400 cursor-not-allowed': !voiceSupported.value,
   'animate-pulse': chatStore.isListening
 }))
 
+const muteButtonClasses = computed(() => ({
+  'text-red-600 bg-red-50 border-red-200': isMuted.value,
+  'text-primary-600 hover:text-primary-700': !isMuted.value && voiceSupported.value,
+  'text-gray-400 cursor-not-allowed': !voiceSupported.value
+}))
+
 const sendButtonClasses = computed(() => ({
-  'bg-blue-500 text-white hover:bg-blue-600': canSend.value,
+  'bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:from-primary-600 hover:to-primary-700 shadow-glow-sm': canSend.value,
   'bg-gray-300 text-gray-500 cursor-not-allowed': !canSend.value
 }))
 
 const voiceButtonTitle = computed(() => {
   if (!voiceSupported.value) return 'Voice input not supported'
   return chatStore.isListening ? 'Stop listening' : 'Start voice input'
+})
+
+const muteButtonTitle = computed(() => {
+  if (!voiceSupported.value) return 'Voice output not supported'
+  return isMuted.value ? 'Unmute AI responses' : 'Mute AI responses'
 })
 
 const statusText = computed(() => {
@@ -258,6 +295,10 @@ function sendQuickAction(message: string) {
   inputMessage.value = message
   sendMessage()
   showQuickActions.value = false
+}
+
+function toggleMuteAgent() {
+  toggleMute()
 }
 
 async function toggleVoiceInput() {

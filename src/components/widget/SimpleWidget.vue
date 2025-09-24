@@ -8,8 +8,11 @@
     >
       <div class="card-content">
         <div class="chat-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.09 0 2.14-.18 3.12-.5l5.88 1.92-1.92-5.88c.32-.98.5-2.03.5-3.12 0-5.52-4.48-10-10-10z"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.5c4.97 0 9-4.03 9-9s-4.03-9-9-9-9 4.03-9 9c0 1.74.5 3.37 1.37 4.74L3 20.5l4.26-1.37c1.37.87 2.99 1.37 4.74 1.37z"/>
+            <circle cx="8.5" cy="12.5" r="1" fill="currentColor"/>
+            <circle cx="12" cy="12.5" r="1" fill="currentColor"/>
+            <circle cx="15.5" cy="12.5" r="1" fill="currentColor"/>
           </svg>
         </div>
         <div class="card-text">
@@ -37,8 +40,11 @@
       <div class="card-header">
         <div class="header-content">
           <div class="header-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.09 0 2.14-.18 3.12-.5l5.88 1.92-1.92-5.88c.32-.98.5-2.03.5-3.12 0-5.52-4.48-10-10-10z"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.5c4.97 0 9-4.03 9-9s-4.03-9-9-9-9 4.03-9 9c0 1.74.5 3.37 1.37 4.74L3 20.5l4.26-1.37c1.37.87 2.99 1.37 4.74 1.37z"/>
+              <circle cx="8.5" cy="12.5" r="1" fill="currentColor"/>
+              <circle cx="12" cy="12.5" r="1" fill="currentColor"/>
+              <circle cx="15.5" cy="12.5" r="1" fill="currentColor"/>
             </svg>
           </div>
           <div class="header-text">
@@ -109,7 +115,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import type { BusinessConfig } from '@/types'
 import ChatPanel from '@/components/chat/ChatPanel.vue'
 import ContentPanel from '@/components/content/ContentPanel.vue'
@@ -422,7 +428,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.05);
   animation: expandPopup 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
 }

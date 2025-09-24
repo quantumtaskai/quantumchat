@@ -96,7 +96,7 @@ interface Props {
   business: BusinessConfig
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 
 const selectedService = ref('')
 const userCount = ref(1)

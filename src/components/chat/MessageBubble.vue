@@ -14,8 +14,8 @@
       <!-- Message Content -->
       <div class="message-content max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
         <!-- Message Bubble -->
-        <div 
-          class="px-4 py-3 rounded-2xl shadow-sm"
+        <div
+          class="px-4 py-3 rounded-2xl shadow-glass animate-fade-in hover-lift gpu-accelerated"
           :class="bubbleClasses"
         >
 
@@ -108,7 +108,7 @@ const { speak } = useVoice()
 const isUser = computed(() => props.message.role === 'user')
 const isAssistant = computed(() => props.message.role === 'assistant')
 const showAvatar = computed(() => isAssistant.value)
-const showSenderLabel = computed(() => isAssistant.value)
+// const showSenderLabel = computed(() => isAssistant.value) // Unused variable
 const showActions = computed(() => isAssistant.value)
 
 const alignmentClass = computed(() => ({
@@ -137,8 +137,8 @@ const avatarText = computed(() => {
 })
 
 const bubbleClasses = computed(() => ({
-  'bg-blue-500 text-white': isUser.value,
-  'bg-white border border-gray-200 text-gray-900': isAssistant.value,
+  'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-glow-sm': isUser.value,
+  'glass-morphism text-gray-900': isAssistant.value,
   'rounded-br-md': isUser.value,
   'rounded-bl-md': isAssistant.value
 }))

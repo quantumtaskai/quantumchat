@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Receptionist - Ultra Simple</title>
+    <title>QuantumChat AI - Ultra Simple</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,38 +17,54 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%, #f093fb 100%);
             min-height: 100vh;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .content {
             text-align: center;
-            max-width: 700px;
+            max-width: 650px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
             background: linear-gradient(45deg, #fff, #e0e7ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+            letter-spacing: -0.02em;
         }
 
         .subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 50px;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
             opacity: 0.95;
-            line-height: 1.6;
-            font-weight: 300;
+            line-height: 1.5;
+            font-weight: 400;
+            letter-spacing: -0.01em;
         }
 
         .integration-box {
@@ -162,18 +183,36 @@
 </head>
 <body>
     <div class="content">
-        <h1>🤖 AI Receptionist</h1>
+        <h1>
+            <!-- Modern AI Icon -->
+            <svg style="display: inline-block; width: 2rem; height: 2rem; margin-right: 0.5rem; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+            QuantumChat AI
+        </h1>
 
         <p class="subtitle">
-            Beautiful card-style chat widget that automatically expands when visitors start chatting.
+            Beautiful card-style chat widget with voice integration and performance optimizations.
             <br><strong>One script tag. Zero configuration.</strong>
         </p>
 
         <div class="integration-box">
-            <h3 class="integration-title">✨ Add to Your Website</h3>
+            <h3 class="integration-title">
+                <!-- Modern Sparkles Icon -->
+                <svg style="display: inline-block; width: 1.2rem; height: 1.2rem; margin-right: 0.5rem; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+                Add to Your Website
+            </h3>
 
             <div class="code-block">
-                <button class="copy-button" onclick="copyCode()">📋 Copy</button>
+                <button class="copy-button" onclick="copyCode()">
+                    <!-- Modern Copy Icon -->
+                    <svg style="display: inline-block; width: 0.8rem; height: 0.8rem; margin-right: 0.3rem; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                    Copy
+                </button>
 <span style="color: #9ca3af;">&lt;!-- That's it! Widget appears automatically --&gt;</span>
 <span style="color: #f87171;">&lt;script</span> <span style="color: #60a5fa;">src</span>=<span style="color: #34d399;">"https://yourhost.com/widget-loader.js"</span><span style="color: #f87171;">&gt;&lt;/script&gt;</span>
             </div>
@@ -181,27 +220,47 @@
 
         <div class="features">
             <div class="feature">
-                <div class="feature-icon">🎯</div>
+                <div class="feature-icon">
+                    <!-- Modern Target Icon -->
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.8rem; height: 1.8rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
                 <div class="feature-title">Auto-Loading</div>
                 <div class="feature-desc">Appears automatically when script loads</div>
             </div>
 
             <div class="feature">
-                <div class="feature-icon">💬</div>
-                <div class="feature-title">Smart Expansion</div>
-                <div class="feature-desc">Expands when users start typing</div>
+                <div class="feature-icon">
+                    <!-- Modern Microphone Icon -->
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.8rem; height: 1.8rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Voice Integration</div>
+                <div class="feature-desc">Speech-to-text and text-to-speech</div>
             </div>
 
             <div class="feature">
-                <div class="feature-icon">🎨</div>
-                <div class="feature-title">Beautiful Design</div>
-                <div class="feature-desc">Professional card interface</div>
+                <div class="feature-icon">
+                    <!-- Modern Performance Icon -->
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.8rem; height: 1.8rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <div class="feature-title">High Performance</div>
+                <div class="feature-desc">GPU-optimized animations</div>
             </div>
 
             <div class="feature">
-                <div class="feature-icon">📱</div>
+                <div class="feature-icon">
+                    <!-- Modern Mobile Icon -->
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.8rem; height: 1.8rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a1 1 0 001-1V4a1 1 0 00-1-1H8a1 1 0 00-1 1v16a1 1 0 001 1z"/>
+                    </svg>
+                </div>
                 <div class="feature-title">Mobile Perfect</div>
-                <div class="feature-desc">Slide-up experience on phones</div>
+                <div class="feature-desc">Responsive design for all devices</div>
             </div>
         </div>
     </div>

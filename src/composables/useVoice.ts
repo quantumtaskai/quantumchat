@@ -12,6 +12,7 @@ export function useVoice() {
   const isSupported = ref(false)
   const isListening = ref(false)
   const isSpeaking = ref(false)
+  const isMuted = ref(false)
   
   // Speech Recognition
   let recognition: SpeechRecognition | null = null
@@ -23,9 +24,9 @@ export function useVoice() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
     if (SpeechRecognition) {
       recognition = new SpeechRecognition()
-      recognition.continuous = false
-      recognition.interimResults = true
-      recognition.lang = 'en-US'
+      recognition!.continuous = false
+      recognition!.interimResults = true
+      recognition!.lang = 'en-US'
     }
     
     // Check for Speech Synthesis support
@@ -33,21 +34,48 @@ export function useVoice() {
       synthesis = window.speechSynthesis
     }
     
-    isSupported.value = !!(recognition && synthesis)
+    // Enhanced support detection for cross-origin contexts
+    const hasSecureContext = window.isSecureContext || location.protocol === 'https:'
+    const hasPermissionsAPI = 'permissions' in navigator
+
+    isSupported.value = !!(recognition && synthesis && hasSecureContext)
+
+    // Log initialization status for debugging
+    console.log('Voice API Status:', {
+      speechRecognition: !!recognition,
+      speechSynthesis: !!synthesis,
+      secureContext: hasSecureContext,
+      permissionsAPI: hasPermissionsAPI,
+      supported: isSupported.value
+    })
   }
   
   // Speech-to-Text
   function startListening(): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (!recognition) {
-        reject(new Error('Speech recognition not supported'))
+        reject(new Error('Speech recognition not supported in this context. Please ensure you\'re using HTTPS and the site has microphone permissions.'))
         return
+      }
+
+      // Check microphone permissions first
+      try {
+        if ('permissions' in navigator) {
+          const permission = await navigator.permissions.query({ name: 'microphone' as PermissionName })
+          if (permission.state === 'denied') {
+            reject(new Error('Microphone access denied. Please enable microphone permissions for this site.'))
+            return
+          }
+        }
+      } catch (error) {
+        console.warn('Unable to check microphone permissions:', error)
       }
       
       let finalTranscript = ''
       
       recognition.onstart = () => {
         isListening.value = true
+        console.log('Voice recognition started successfully')
       }
       
       recognition.onresult = (event) => {
@@ -72,14 +100,34 @@ export function useVoice() {
       
       recognition.onerror = (event) => {
         isListening.value = false
-        reject(new Error(`Speech recognition error: ${event.error}`))
+        console.error('Speech recognition error:', event.error, event.message)
+
+        let errorMessage = 'Speech recognition failed'
+        switch (event.error) {
+          case 'not-allowed':
+            errorMessage = 'Microphone access denied. Please allow microphone access and try again.'
+            break
+          case 'no-speech':
+            errorMessage = 'No speech detected. Please try speaking again.'
+            break
+          case 'network':
+            errorMessage = 'Network error. Please check your connection and try again.'
+            break
+          case 'service-not-allowed':
+            errorMessage = 'Speech service not allowed. This may be due to cross-origin restrictions.'
+            break
+          default:
+            errorMessage = `Speech recognition error: ${event.error}`
+        }
+
+        reject(new Error(errorMessage))
       }
       
       try {
         recognition.start()
       } catch (error) {
         isListening.value = false
-        reject(error)
+        reject(new Error(`Failed to start speech recognition: ${error}`))
       }
     })
   }
@@ -97,38 +145,84 @@ export function useVoice() {
         reject(new Error('Speech synthesis not supported'))
         return
       }
-      
-      // Cancel any ongoing speech
-      synthesis.cancel()
-      
-      const utterance = new SpeechSynthesisUtterance(text)
-      
-      // Set options
-      utterance.rate = options.rate || 1.0
-      utterance.pitch = options.pitch || 1.0
-      utterance.volume = options.volume || 1.0
-      utterance.lang = options.lang || 'en-US'
-      
-      // Event handlers
-      utterance.onstart = () => {
-        isSpeaking.value = true
-      }
-      
-      utterance.onend = () => {
-        isSpeaking.value = false
+
+      // Skip speaking if muted
+      if (isMuted.value) {
         resolve()
+        return
       }
-      
-      utterance.onerror = (event) => {
-        isSpeaking.value = false
-        reject(new Error(`Speech synthesis error: ${event.error}`))
+
+      // Skip empty text
+      if (!text || text.trim().length === 0) {
+        resolve()
+        return
       }
+
+      // Cancel any ongoing speech gracefully
+      if (isSpeaking.value) {
+        synthesis.cancel()
+        // Small delay to ensure cancellation completes
+        setTimeout(() => {
+          startSpeech()
+        }, 50)
+      } else {
+        startSpeech()
+      }
+
+      function startSpeech() {
       
-      try {
-        synthesis.speak(utterance)
-      } catch (error) {
-        isSpeaking.value = false
-        reject(error)
+        const utterance = new SpeechSynthesisUtterance(text)
+
+        // Set options
+        utterance.rate = options.rate || 1.0
+        utterance.pitch = options.pitch || 1.0
+        utterance.volume = options.volume || 1.0
+        utterance.lang = options.lang || 'en-US'
+
+        // Event handlers
+        utterance.onstart = () => {
+          isSpeaking.value = true
+        }
+
+        utterance.onend = () => {
+          isSpeaking.value = false
+          resolve()
+        }
+
+        utterance.onerror = (event) => {
+          isSpeaking.value = false
+
+          // Handle different error types gracefully
+          switch (event.error) {
+            case 'interrupted':
+              // This is normal when speech is cancelled, don't treat as error
+              console.log('Speech synthesis interrupted (normal)')
+              resolve()
+              break
+            case 'canceled':
+              // Also normal when speech is cancelled
+              console.log('Speech synthesis cancelled (normal)')
+              resolve()
+              break
+            case 'not-allowed':
+              reject(new Error('Speech synthesis not allowed. Please check browser permissions.'))
+              break
+            case 'network':
+              reject(new Error('Network error during speech synthesis. Please check your connection.'))
+              break
+            default:
+              // Only reject for actual errors, not interruptions
+              console.warn(`Speech synthesis warning: ${event.error}`)
+              reject(new Error(`Speech synthesis error: ${event.error}`))
+          }
+        }
+
+        try {
+          synthesis!.speak(utterance)
+        } catch (error) {
+          isSpeaking.value = false
+          reject(error)
+        }
       }
     })
   }
@@ -138,6 +232,20 @@ export function useVoice() {
       synthesis.cancel()
       isSpeaking.value = false
     }
+  }
+
+  // Mute controls
+  function setMuted(muted: boolean) {
+    isMuted.value = muted
+    // Stop speaking if currently speaking and being muted
+    if (muted && isSpeaking.value) {
+      stopSpeaking()
+    }
+  }
+
+  function toggleMute() {
+    setMuted(!isMuted.value)
+    return isMuted.value
   }
   
   // Get available voices
@@ -187,20 +295,25 @@ export function useVoice() {
     isSupported,
     isListening,
     isSpeaking,
-    
+    isMuted,
+
     // Speech-to-Text
     startListening,
     stopListening,
-    
+
     // Text-to-Speech
     speak,
     stopSpeaking,
-    
+
+    // Mute controls
+    setMuted,
+    toggleMute,
+
     // Voice management
     getVoices,
     setVoice,
     getPreferredVoice,
-    
+
     // Cleanup
     cleanup
   }
@@ -209,8 +322,8 @@ export function useVoice() {
 // Type declarations for browsers that might not have these
 declare global {
   interface Window {
-    SpeechRecognition: typeof SpeechRecognition
-    webkitSpeechRecognition: typeof SpeechRecognition
+    SpeechRecognition: new () => SpeechRecognition
+    webkitSpeechRecognition: new () => SpeechRecognition
   }
 }
 

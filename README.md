@@ -1,4 +1,4 @@
-# AI Business Receptionist
+# Quantumtask AI Business Receptionist
 
 A modern, Vue.js-based AI receptionist application that provides intelligent chat assistance and dynamic content delivery for businesses. Each deployment is dedicated to a single business, providing a focused and personalized experience.
 
